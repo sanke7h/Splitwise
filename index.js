@@ -232,6 +232,10 @@ app.post('/group_details',(req,res)=>{
                         return;
                     }
                     const memberIds = memberid.map(member => member.userId);
+                    if(memberIds.length==0){
+                        const members=[];
+                        return res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,members});
+                    }
                     connection.query('SELECT * FROM `user` WHERE `userId` IN (?)',[memberIds], (error, members) => {
                         if (error) {
                             console.error('Error executing SQL query:', error);
