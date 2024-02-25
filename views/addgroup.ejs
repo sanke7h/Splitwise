@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignUp</title>
+</head>
+<body>
+    <form action="/addGroup" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="Name">Enter GroupName</label>
+            <input id="Name" type="text" name="Name" required>
+        </div>
+        <div>
+            <label for="GroupIcon">Select ProfilePic:</label>
+            <input type="file" id="GroupIcon" name="group_pic" accept="image/*">
+        </div>
+        <button type="submit">Create Group</button>
+    </form>
+</body>
+</html>

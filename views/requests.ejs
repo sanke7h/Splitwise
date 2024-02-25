@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Requests</title>
+</head>
+<body>
+    <h1>Requests</h1>
+
+    <!-- Start ordered list outside the loop -->
+    <ol>
+        <!-- Iterate over requests -->
+        <% requests.forEach(request => { %>
+            <!-- Fetch corresponding group information -->
+            <% const group = groups.find(group => group.groupid === request.groupid); %>
+
+            <!-- Fetch corresponding admin information -->
+            <% const admin = users.find(user => user.userId === group.adminid); %>
+
+            <!-- Display details of each request within a list item -->
+            <li>
+                <h2>Request Details</h2>
+                <p>Group ID: <%= request.groupid %></p>
+                <p>Admin Name: <%= admin.Name %></p>
+                <p>Admin Email: <%= admin.Email %></p>
+                <form action="/accept" method="post">
+                    <input type="hidden" name="requestid" value="<%= request.request_id %>">
+                    <button type="submit">Accept Request</button>
+                </form>
+                <form action="/decline" method="post">
+                    <input type="hidden" name="requestid" value="<%= request.request_id %>">
+                    <button type="submit">Decline Request</button>
+                </form>
+            </li>
+        <% }); %>
+    </ol>
+</body>
+</html>

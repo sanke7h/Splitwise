@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= group.groupname %></title>
+    </head>
+    <body>
+        <h1><%= group.groupname %></h1>
+        <img src="<%= group.group_pic %>">
+        <div>Admin Name:<%= user.Name %></div>
+        <div>Admin EmailId:<%= user.Email %></div>  
+        <form action="/logout" method="post">
+            <button type="submit">Logout</button>
+        </form>
+        <div>Group Members</div>
+        <% if(members.length==0){ %>
+            <div>No Members Currently</div>
+        <% } %>
+        <% for(c of members){ %>
+            <div>Name:<%= c.Name %></div>
+            <div>Email:<%= c.Email %></div>
+        <% } %>
+
+        <!-- Add Member form -->
+    <form action="/add_member" method="post" id="addMemberForm">
+        <button type="button" id="showDropdownBtn">Add Member</button>
+        <div id="dropdownContainer" style="display: none;">
+            <label for="userId">Select Member:</label>
+            <select id="userId" name="userId">
+                <% users.forEach(users => { %>
+                    <option value="<%= users.userId %>"><%= users.Name %></option>
+                <% }); %>
+            </select>
+            <input type="hidden" name="groupid" value="<%= group.groupid %>">
+            <button type="submit">Add</button>
+        </div>
+    </form>
+
+    <script>
+        // JavaScript to toggle visibility of dropdown when Add Member button is clicked
+        document.getElementById('showDropdownBtn').addEventListener('click', function() {
+            document.getElementById('dropdownContainer').style.display = 'block';
+        });
+    </script>
+    </body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Profile</title>
+    </head>
+    <body>
+        <h1>My Profile</h1>
+        <% for(let c of results){ %>
+            <div>Username:<%= c.Name %></div>
+            <div>EmailId:<%= c.Email %></div>
+            <img src="<%=c.profile_pic %>"></img>
+        <% } %> 
+        <h1>My Transactions</h1>
+        <div>No Pending Transactions</div>
+        <form action="/MyGroups" method="get">
+            <button type="submit">My Groups</button>
+        </form>
+        <form action="/logout" method="post">
+            <button type="submit">Logout</button>
+        </form>
+        <form action="/addGroup" method="get">
+            <button type="submit">Create Group</button>
+        </form>
+        <form action="/requests" method="post">
+            <button type="submit">Pending Requests</button>
+        </form>
+    </body>
+</html>

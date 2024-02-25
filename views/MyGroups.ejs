@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MyGroups</title>
+    </head>
+    <body>
+        <h1>My Groups</h1> 
+        <% if(r.length==0){ %>
+            <div>You Have Not Created any Group</div>
+        <% } %>    
+        <% for(let c of r){ %>
+            <div>Groupname:<%= c.groupname %></div>
+            <img src="<%= c.group_pic %>">
+            <form action="/group_details" method="post">
+                <input type="hidden" name="groupid" value="<%= c.groupid %>">
+                <button type="submit">View Details</button>
+            </form>
+        <% } %> 
+        <form action="/logout" method="post">
+            <button type="submit">Logout</button>
+        </form>
+        <form action="/addGroup" method="get">
+            <button type="submit">Create Group</button>
+        </form>
+    </body>
+</html>
