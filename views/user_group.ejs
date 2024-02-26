@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Groups</title>
+    </head>
+    <body>
+        <% for(c of results){ %>
+            <div>Group Name:<%= c.groupname %></div>
+            <img src="<%=c.group_pic %>"></img>
+            <div>Admin Name:<%= c.Name %></div>
+            <button>View Details</button>
+        <% } %>
+
+        
+    </body>
+</html>

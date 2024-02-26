@@ -232,8 +232,10 @@ app.post('/group_details',(req,res)=>{
                         return;
                     }
                     const memberIds = memberid.map(member => member.userId);
-                    if(memberIds.length==0){
-                        const members=[];
+                    if(memberIds.length == 0)
+                    {
+                        // const users = [];
+                        const members = [];
                         return res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,members});
                     }
                     connection.query('SELECT * FROM `user` WHERE `userId` IN (?)',[memberIds], (error, members) => {
@@ -346,5 +348,17 @@ app.post('/decline',(req,res)=>{
           return;
         }
         res.redirect('/profile');
+    });
+})
+
+app.get('/user_group', (req, res) =>{
+    const userId=req.session.user_id;
+    connection.query('SELECT * FROM `memberships` INNER JOIN `grup` ON memberships.groupid = grup.groupid INNER JOIN `user` ON user.userId = grup.adminid WHERE memberships.`userId` = ?', [userId], (error, results, fields) => {
+        if (error) {
+          console.error(error);
+          return;
+        }
+        console.log(results);
+        res.render("user_group", {results});
     });
 })
