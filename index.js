@@ -367,3 +367,28 @@ app.get('/user_group', (req, res) =>{
         res.redirect('/login');
     }
 })
+
+app.post('/add_expense',(req,res)=>{
+    const userId=req.session.user_id;
+    const groupid=req.body.groupid;
+    connection.query('SELECT userId FROM `memberships` WHERE `groupid`= ?',[groupid], (error, r, f) => {
+        if (error) {
+          console.log(error);
+          return;
+        }
+        if(r.length==0){
+            return res.send("Add users to group to create expense");
+        }
+        r= r.map(b => b.userId);
+        r= r.filter(userid => userid !== userId);
+        console.log(r);
+        connection.query('SELECT userId,Name,profile_pic FROM `user` WHERE `userId` IN (?)',[r], (error, results, fields) => {
+            if (error) {
+              console.error(error);
+              return;
+            }
+            console.log(results);
+            res.render("transaction",{results});
+        });
+    });
+})

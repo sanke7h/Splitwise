@@ -8,6 +8,10 @@
         <img src="<%= group.group_pic %>">
         <div>Admin Name:<%= user.Name %></div>
         <div>Admin EmailId:<%= user.Email %></div>  
+        <form action="/add_expense" method="post">
+            <input type="hidden" name="groupid" value="<%= group.groupid %>">
+            <button type="submit">Create New Expense</button>
+        </form>
         <form action="/logout" method="post">
             <button type="submit">Logout</button>
         </form>
