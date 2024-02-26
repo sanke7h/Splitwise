@@ -352,13 +352,18 @@ app.post('/decline',(req,res)=>{
 })
 
 app.get('/user_group', (req, res) =>{
-    const userId=req.session.user_id;
-    connection.query('SELECT * FROM `memberships` INNER JOIN `grup` ON memberships.groupid = grup.groupid INNER JOIN `user` ON user.userId = grup.adminid WHERE memberships.`userId` = ?', [userId], (error, results, fields) => {
-        if (error) {
-          console.error(error);
-          return;
-        }
-        console.log(results);
-        res.render("user_group", {results});
-    });
+    if(req.session.user_id!=undefined){
+        const userId=req.session.user_id;
+        connection.query('SELECT * FROM `memberships` INNER JOIN `grup` ON memberships.groupid = grup.groupid INNER JOIN `user` ON user.userId = grup.adminid WHERE memberships.`userId` = ?', [userId], (error, results, fields) => {
+            if (error) {
+              console.error(error);
+              return;
+            }
+            console.log(results);
+            return res.render("user_group", {results});
+        });
+    }
+    else{
+        res.redirect('/login');
+    }
 })

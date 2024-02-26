@@ -4,6 +4,9 @@
         <title>My Groups</title>
     </head>
     <body>
+        <% if(results.length==0){ %>
+            <h1>You Are Not Part Of Any Group</h1>
+        <% } %>    
         <% for(c of results){ %>
             <div>Group Name:<%= c.groupname %></div>
             <img src="<%=c.group_pic %>"></img>
