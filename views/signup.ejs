@@ -1,29 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SignUp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/images/login.css">
+    <title>Sign Up</title>
+    <style>
+        /* Additional CSS for the profile picture upload button */
+        .file-upload {
+            display: none;
+        }
+
+        .circle {
+            border-radius: 1000px !important;
+            overflow: hidden;
+            width: 128px;
+            height: 128px;
+            border: 8px solid rgba(255, 255, 255, 0.7);
+            position: relative; /* Changed position to relative */
+            margin: 0 auto; /* Added margin to center horizontally */
+            margin-top: 20px; /* Adjusted top margin to create space below headline */
+        }
+
+        .profile-pic {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .p-image {
+            position: relative; /* Changed position to relative */
+            margin-top: -40px; /* Adjusted top margin to align with profile picture */
+            margin-left: 80px; /* Adjusted left margin to align with profile picture */
+            color: #666666;
+            transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+        }
+
+        .p-image:hover {
+            transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+        }
+
+        .upload-button {
+            font-size: 1.2em;
+        }
+
+        .upload-button:hover {
+            transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+            color: #999;
+        }
+
+        /* Added style for input boxes */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            margin-top: 20px; /* Added margin-top to create space between input boxes */
+            width: calc(100% - 20px); /* Adjusted width to fill the container */
+            box-sizing: border-box; /* Added box-sizing to include padding and border in width calculation */
+            padding: 10px; /* Added padding for better appearance */
+            margin-bottom: 10px; /* Added margin-bottom to separate input boxes */
+        }
+
+        /* Adjusted the form container */
+        .form-container {
+            margin-top: 30px; /* Increased margin-top */
+            height: auto; /* Changed height to auto */
+            padding-bottom: 20px; /* Added padding to bottom to separate form from other elements */
+        }
+		h1 {
+            margin-top: 10px; /* Increased margin-top */
+        }
+    </style>
 </head>
+
 <body>
-    <form action="/signup" method="post" enctype="multipart/form-data">
-        <div>
-            <label for="Name">Enter UserName</label>
-            <input id="Name" type="text" name="Name" required>
+
+    <div class="container" id="container">
+        <div class="form-container sign-in">
+            <form action="/signup" method="post" enctype="multipart/form-data">
+                <h1>Sign Up</h1>
+                <!-- Profile picture upload -->
+                <div class="circle">
+                    <img class="profile-pic"
+                        src="/images/images.png">
+                </div>
+                <div class="p-image">
+                    <i class="fa fa-camera upload-button"></i>
+                    <input class="file-upload" type="file" id="profilePic" name="profilePic" accept="image/*" />
+                </div>
+
+                <input id="Name" type="text" name="Name" placeholder="Name" required>
+                <input id="Email" type="email" name="Email" placeholder="Email" required>
+                <input id="Password" type="password" name="Password" placeholder="Password" required>
+                <button type="submit">Sign Up</button>
+
+            </form>
         </div>
-        <div>
-            <label for="Email">Enter User Email</label>
-            <input id="Email" type="email" name="Email" required>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-right">
+                    <!-- Icon to be added -->
+                    <h1>Splitwise</h1>
+                    <p>Sign Up with your personal details to use all of site features</p>
+                    <!-- <button class="hidden" id="register">Sign Up</button> -->
+                </div>
+				
+            </div>
+			
         </div>
-        <div>
-            <label for="Password">Enter Password</label>
-            <input id="Password" type="password" name="Password" required>
-        </div>
-        <div>
-            <label for="profilePic">Select ProfilePic:</label>
-            <input type="file" id="profilePic" name="profilePic" accept="image/*">
-        </div>
-        <button type="submit">Sign Up</button>
-    </form>
+    </div>
+
+
+	<!-- Script is to show the profile picture once uploaded uses jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var readURL = function (input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('.profile-pic').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+
+            $(".file-upload").on('change', function () {
+                readURL(this);
+            });
+
+            $(".upload-button").on('click', function () {
+                $(".file-upload").click();
+            });
+        });
+    </script>
 </body>
+
 </html>
