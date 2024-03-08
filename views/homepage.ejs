@@ -1,14 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Splitwise</title>
+    <link rel="shortcut icon" href="/images/homepage/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/images/homepage/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="image" href="/images/homepage/hero-banner.png">
 </head>
-<body>
-    <form action="/signup" method="get">
-        <button type="submit">Signup</button>
-    </form>
-    <form action="/login" method="get">
-        <button type="submit">Login</button>
-    </form>
+
+<body id="top">
+    <header class="header" data-header>
+        <div class="container">
+            <a href="#" class="logo">Splitwise</a>
+            <nav class="navbar" data-navbar>
+                <div class="wrapper">
+                    <a href="#" class="logo">Splitwise</a>
+                    <button class="nav-close-btn" aria-label="close menu" data-nav-toggler>
+                        <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+                    </button>
+                </div>
+            </nav>
+            <button class="nav-open-btn" aria-label="open menu" data-nav-toggler>
+                <ion-icon name="menu-outline" aria-hidden="true"></ion-icon>
+            </button>
+            <form action="/login" method="get">
+                <button class="btn btn-primary has-before has-after" type="submit">Log in</button>
+            </form>
+            <div class="overlay" data-nav-toggler data-overlay></div>
+        </div>
+    </header>
+    <main>
+        <article>
+            <section class="section hero" id="home" aria-label="hero">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1 class="h1 hero-title">
+                            Simplify Shared <span class="has-before">Expenses</span>, Simplify Friendships
+                        </h1>
+                        <p class="hero-text">
+                            Splitwise helps settling up feel more like catching up. Send and receive money from friends
+                            and split
+                            everyday necessities, bills, and shared activities like takeout or travel.
+                        </p>
+                        <div class="wrapper">
+                            <form action="/signup" method="get">
+                                <button class="btn btn-primary has-before has-after" type="submit">Sign up</button>
+                            </form>
+                        </div>
+                    </div>
+                    <figure class="hero-banner">
+                        <img src="/images/homepage/hero-banner.png" width="794" height="637" alt="hero banner"
+                            class="w-100">
+                    </figure>
+                </div>
+            </section>
+            <script src="/images/homepage/script.js" defer></script>
+            <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+            <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </body>
+
 </html>
