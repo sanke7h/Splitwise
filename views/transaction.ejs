@@ -1,19 +1,78 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>New Expense</title>
-    </head>
-    <body>
-        <h1>Add New Expense</h1>
-        <form action="" method="post">
-            <div>
-                <label for="Name">Enter Expense Description</label>
-                <input id="Name" type="text" name="Name" required>
-            </div>
-            <div>
-                <label for="Amount">Enter Total Amount</label>
-                <input id="Amount" type="number" name="Amount" required>
-            </div>
-        </form>
-    </body>
+<head>
+    <title>New Expense</title>
+</head>
+<body>
+    <h1>Add New Expense</h1>
+    <form action="/new_expense" method="post" id="expenseForm">
+        <div>
+            <label for="description">Enter Expense Description</label>
+            <input id="description" type="text" name="description" required>
+        </div>
+        <div>
+            <input id="groupid" type="hidden" name="groupid" value="<%= groupid %>">
+        </div>
+        <div>
+            <label for="Amount">Enter Total Amount</label>
+            <input id="Amount" type="number" name="Amount" required>
+        </div>
+        <div id="usersContainer">
+            <!-- Selected users will be displayed here -->
+        </div>
+        <div id="dropdownContainer">
+            <input type="hidden" id="usersData" value='<%- JSON.stringify(results) %>'>
+            <!-- Dropdown will be inserted here -->
+        </div>
+        <button type="button" onclick="showDropdown()">Add User</button>
+        <button type="submit">Create Expense</button>
+    </form>
+
+    <script>
+        function showDropdown() {
+            var results = JSON.parse(document.getElementById('usersData').value); // Retrieve the array from hidden input
+            var dropdownContainer = document.getElementById('dropdownContainer');
+            dropdownContainer.innerHTML = ''; // Clear previous dropdown content
+
+            var select = document.createElement('select');
+            select.name = 'selectedUserId'; // Change to userId
+
+            results.forEach(function(item) {
+                var option = document.createElement('option');
+                option.value = item.userId; // Set userId as the value
+                option.text = item.Name;
+                select.appendChild(option);
+            });
+
+            dropdownContainer.appendChild(select);
+
+            select.addEventListener('change', function() {
+                var selectedUserId = this.value;
+                var selectedUserName = this.options[this.selectedIndex].text;
+                
+                // Add input field for the selected userid
+                var usersContainer = document.getElementById('usersContainer');
+                var userInputElement = document.createElement('input');
+                userInputElement.type = 'hidden';
+                userInputElement.value = selectedUserId; // Set userId as the value
+                userInputElement.name = 'UserId';
+                userInputElement.readOnly = true;
+                usersContainer.appendChild(userInputElement);
+                
+                // Add input field for the selected userName
+                //var usersContainer = document.getElementById('usersContainer');
+                var userInputElement2 = document.createElement('input');
+                userInputElement2.type = 'text';
+                userInputElement2.value = selectedUserName; // Set userId as the value
+                userInputElement2.name = 'Name';
+                userInputElement2.readOnly = true;
+                usersContainer.appendChild(userInputElement2);
+                
+
+                // Remove the selected option from the dropdown
+                this.remove(this.selectedIndex);
+            });
+        }
+    </script>
+</body>
 </html>

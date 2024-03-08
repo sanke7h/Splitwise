@@ -388,7 +388,145 @@ app.post('/add_expense',(req,res)=>{
               return;
             }
             console.log(results);
-            res.render("transaction",{results});
+            res.render("transaction",{results,groupid});
         });
     });
 })
+
+
+app.post('/new_expense', (req, res) => {
+    console.log(req.body);
+    const randomNumber = Math.floor(Math.random() * 10000) + 1;
+    const new_expense = {
+        userid: req.session.user_id,
+        groupid: req.body.groupid,
+        amount: req.body.Amount,
+        description: req.body.description,
+        random: randomNumber
+    };
+
+    connection.query('INSERT INTO `expenses` SET ?', new_expense, (error, results, fields) => {
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+        connection.query('SELECT expenseid FROM expenses WHERE random=?',randomNumber, (error, result, fields) => {
+            if (error) {
+                console.error(error);
+                return;
+            }
+            const expenseid=result[result.length-1].expenseid;
+            const userid=req.session.user_id;
+            const userIDs = req.body.UserId;
+            const share = req.body.Amount / (userIDs.length + 1);
+
+            const payments = [];
+
+            userIDs.forEach(userID => {
+                const userObject = {
+                    useriD: userID,
+                    receiverid: userid,
+                    expenseid: expenseid,
+                    amount: share
+                };
+                payments.push(userObject);
+            });
+
+            console.log(payments);
+
+            payments.forEach(payment => {
+                connection.query('INSERT INTO `payments` SET ?',payment, (error, results, fields) => {
+                    if (error) {
+                        console.error("Error inserting payment", payment);
+                        console.error(error);
+                        return;
+                    }
+                });
+            });
+        
+            res.send("Expense inserted");
+        });
+    });
+});
+
+app.get('/payments',(req,res)=>{
+    if(req.session.user_id!=undefined){
+        const userid=req.session.user_id;
+        connection.query("(select receiverid as ids,payments.amount,description from payments join expenses on payments.expenseid=expenses.expenseid where payments.userid=?) union all (select payments.userid as ids,-(payments.amount) ,description from payments join expenses on payments.expenseid=expenses.expenseid where receiverid=? ) order by ids", [userid, userid], (err, results,fields) => {
+           if (err) {
+            console.error('Error executing query:', err);
+            return;
+           }
+           //console.log('Payments:', results);
+           const idMap = new Map(); // Map to store total amount and modified descriptions for each ID
+           if(results.length==0){
+            return res.send("<h1>No Payments to be made</h1>")
+           }
+  
+           // Iterate through each payment
+           results.forEach(payment => {
+               const { ids, amount, description } = payment;
+    
+               // Check if the ID already exists in the map
+               if (idMap.has(ids)) {
+               const { totalAmount, descriptions } = idMap.get(ids);
+               // Update total amount for the ID
+               idMap.set(ids, {
+                  totalAmount: totalAmount + amount,
+                  descriptions: [...descriptions, `${amount} ${description}`]
+                });
+            } 
+                else {
+                // If the ID doesn't exist in the map, create a new entry
+                idMap.set(ids, {
+                  totalAmount: amount,
+                  descriptions: [`${amount}: ${description}`]
+                });
+                }
+            });
+  
+            // Convert the map entries to the required structure
+            const transformedPayments = Array.from(idMap, ([ids, { totalAmount, descriptions }]) => ({
+                ids,
+                totalAmount,
+                descriptions
+            }));
+            //console.log(transformedPayments);
+
+            const query = `SELECT userId,Name, Email, profile_pic FROM user WHERE userId IN (${transformedPayments.map(item => item.ids).join(',')})`;
+
+            connection.query(query, function(err, results, fields) {
+                if (err) {
+                  console.error('Error fetching user details:', err);
+                  connection.end();
+                  return;
+                }
+                //console.log(results);
+              
+                const joinedData = [];
+
+            results.forEach(result => {
+               const payment = transformedPayments.find(payment => payment.ids === result.userId);
+               if (payment) {
+                joinedData.push({
+                   userId: result.userId,
+                   Name: result.Name,
+                   Email: result.Email,
+                   profile_pic: result.profile_pic,
+                   totalAmount: payment.totalAmount,
+                   descriptions: payment.descriptions
+                });
+               }
+            });
+            console.log(joinedData);
+            res.render("payments",{joinedData}); 
+            });
+    });
+    }
+    else{
+        res.redirect('/login')
+    }
+})
+
+
