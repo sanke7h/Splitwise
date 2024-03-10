@@ -22,9 +22,13 @@
         <% for(c of members){ %>
             <div>Name:<%= c.Name %></div>
             <div>Email:<%= c.Email %></div>
+            <% if(isadmin==1){ %>
+                <button type="button">Remove User</button>
+            <% } %>
         <% } %>
 
         <!-- Add Member form -->
+    <% if(isadmin==1){ %>
     <form action="/add_member" method="post" id="addMemberForm">
         <button type="button" id="showDropdownBtn">Add Member</button>
         <div id="dropdownContainer" style="display: none;">
@@ -38,6 +42,7 @@
             <button type="submit">Add</button>
         </div>
     </form>
+    <% } %>
 
     <script>
         // JavaScript to toggle visibility of dropdown when Add Member button is clicked

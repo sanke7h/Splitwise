@@ -53,13 +53,7 @@ app.get('/profile',(req,res)=>{
               console.log(error);
               return;
             }
-            connection.query('SELECT * FROM `grup` WHERE `adminid`= ?',[userid], (error, r, f) => {
-                if (error) {
-                  console.log(error);
-                  return;
-                }
-                res.render("profile",{results,r});
-            });
+            res.render("profile",{results});
         });
     }
     else{
@@ -157,17 +151,18 @@ app.post('/logout',async(req,res)=>{
 
 app.get('/MyGroups',async(req,res)=>{
     if(req.session.user_id!=undefined){
-        const userid=req.session.user_id;
-        connection.query('SELECT * FROM `grup` WHERE `adminid`= ?',[userid], (error, r, f) => {
+        const userId=req.session.user_id;
+        connection.query('SELECT * FROM `memberships` INNER JOIN `grup` ON memberships.groupid = grup.groupid INNER JOIN `user` ON user.userId = grup.adminid WHERE memberships.`userId` = ?', [userId], (error, results, fields) => {
             if (error) {
-              console.log(error);
+              console.error(error);
               return;
             }
-            res.render("MyGroups",{r});
+            console.log(results);
+            return res.render("MyGroups", {results});
         });
     }
     else{
-        return res.redirect('/login');
+        res.redirect('/login');
     }
 })
 
@@ -182,18 +177,20 @@ app.get('/addGroup',(req,res)=>{
 })
 
 app.post('/addGroup',upload.single('group_pic'),(req,res)=>{
-    let newUser;
+    const randomNumber = Math.floor(Math.random() * 10000) + 1;
     if(req.file==undefined){
         newGroup={
             groupname:req.body.Name,
-            adminid:req.session.user_id
+            adminid:req.session.user_id,
+            Random:randomNumber
         };
     }
     else{
         newGroup={
             groupname:req.body.Name,
             adminid:req.session.user_id,
-            group_pic:req.file.path
+            group_pic:req.file.path,
+            Random:randomNumber
         };
     }
     connection.query('INSERT INTO `grup` SET ?', newGroup, (error, results, fields) => {
@@ -201,8 +198,25 @@ app.post('/addGroup',upload.single('group_pic'),(req,res)=>{
           console.error(error);
           return;
         }
-        console.log('New Group Created Successfully:');
-        res.redirect('/profile');
+        connection.query('SELECT groupid FROM grup WHERE Random=? AND adminid=?',[randomNumber,req.session.user_id], (error, result, fields) => {
+            if (error) {
+                console.error(error);
+                return;
+            }
+            const groupid=result[result.length-1].groupid;
+            const new_membership={
+                groupid:groupid,
+                userId:req.session.user_id
+            };
+            connection.query('INSERT INTO `memberships` SET ?', new_membership, (error, results, fields) => {
+                if (error) {
+                  console.error(error);
+                  return;
+                }
+                console.log('New Group,Membership Created Successfully:');
+                res.redirect('/profile');
+            });
+        });
     });
 })
 
@@ -213,8 +227,14 @@ app.post('/group_details',(req,res)=>{
             console.error('Error executing SQL query:', error);
             return;
         }
-    
+        let isadmin;
         const adminId = groupResults[0].adminid;
+        if(req.session.user_id==adminId){
+            isadmin=1;
+        }
+        else{
+            isadmin=0;
+        }
     
         connection.query('SELECT Name,Email FROM `user` WHERE `userId` = ?', [adminId], (error, userResults) => {
             if (error) {
@@ -243,7 +263,7 @@ app.post('/group_details',(req,res)=>{
                             console.error('Error executing SQL query:', error);
                             return;
                         }
-                        res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,members});
+                        res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,members,isadmin});
                     });
                 });
             });
@@ -351,23 +371,6 @@ app.post('/decline',(req,res)=>{
     });
 })
 
-app.get('/user_group', (req, res) =>{
-    if(req.session.user_id!=undefined){
-        const userId=req.session.user_id;
-        connection.query('SELECT * FROM `memberships` INNER JOIN `grup` ON memberships.groupid = grup.groupid INNER JOIN `user` ON user.userId = grup.adminid WHERE memberships.`userId` = ?', [userId], (error, results, fields) => {
-            if (error) {
-              console.error(error);
-              return;
-            }
-            console.log(results);
-            return res.render("user_group", {results});
-        });
-    }
-    else{
-        res.redirect('/login');
-    }
-})
-
 app.post('/add_expense',(req,res)=>{
     const userId=req.session.user_id;
     const groupid=req.body.groupid;
@@ -376,12 +379,11 @@ app.post('/add_expense',(req,res)=>{
           console.log(error);
           return;
         }
+        r= r.map(b => b.userId);
+        r= r.filter(userid => userid !== userId);
         if(r.length==0){
             return res.send("Add users to group to create expense");
         }
-        r= r.map(b => b.userId);
-        r= r.filter(userid => userid !== userId);
-        console.log(r);
         connection.query('SELECT userId,Name,profile_pic FROM `user` WHERE `userId` IN (?)',[r], (error, results, fields) => {
             if (error) {
               console.error(error);
@@ -453,7 +455,7 @@ app.post('/new_expense', (req, res) => {
 app.get('/payments',(req,res)=>{
     if(req.session.user_id!=undefined){
         const userid=req.session.user_id;
-        connection.query("(select receiverid as ids,payments.amount,description from payments join expenses on payments.expenseid=expenses.expenseid where payments.userid=?) union all (select payments.userid as ids,-(payments.amount) ,description from payments join expenses on payments.expenseid=expenses.expenseid where receiverid=? ) order by ids", [userid, userid], (err, results,fields) => {
+        connection.query("(select receiverid as ids,payments.amount,description from payments join expenses on payments.expenseid=expenses.expenseid where payments.userid=? AND status=?) union all (select payments.userid as ids,-(payments.amount) ,description from payments join expenses on payments.expenseid=expenses.expenseid where receiverid=? AND status=?) order by ids", [userid,2,userid,2], (err, results,fields) => {
            if (err) {
             console.error('Error executing query:', err);
             return;
