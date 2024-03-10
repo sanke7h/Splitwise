@@ -4,7 +4,7 @@ const mysql=require('mysql2');
 const session=require('express-session');
 const multer  = require('multer');
 const path = require('path'); // Import the path module
-
+require('dotenv').config();
 const app=express();
 
 const staticDirectory = path.join(__dirname, 'images');
@@ -32,7 +32,7 @@ const upload = multer({ storage: storage })
 
 const connection =  mysql.createConnection({
     host: 'localhost',
-    password: '12345678',
+    password: process.env.MYSQLPASSWORD,
     user: 'root',
     database: 'splitwise',
   });
