@@ -532,3 +532,25 @@ app.get('/payments',(req,res)=>{
 })
 
 
+// alternate payment method
+app.post('/pay',(req,res)=>{
+    const receiverid=req.body.receiverid;
+    const amount=req.body.Amount;
+
+    connection.query('SELECT * FROM `user` WHERE `userId`= ?',[receiverid], (error, results, fields) => {
+        if (error) {
+          console.log(error);
+          return;
+        }
+        const result=results[0]
+        res.render("Pay",{amount,result});
+    });
+})
+
+
+
+app.post('/payment/process',(req,res)=>{
+    //to be added
+    console.log(req.body);
+    res.redirect('/profile');
+})

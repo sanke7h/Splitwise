@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pay</title>
+    </head>
+    <body>
+        <div>
+            <div>Name:<%= result.Name %></div>
+            <img src="<%= result.profile_pic %>">
+            <div>Amount:<%= amount %></div>
+            <form action="payment/process" method="post">
+                <input type="hidden" name="amount" value="<%= amount %>">
+                <input type="hidden" name="receiverid" value="<%= result.userId %>">
+                <label for="Password">Enter Password</label>
+                <input id="Password" type="password" name="Password" placeholder="Password" required>
+                <button type="submit">Pay</button>
+            </form>
+        </div>
+    </body>
+</html>
