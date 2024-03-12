@@ -7,10 +7,10 @@ const path = require('path'); // Import the path module
 require('dotenv').config();
 const app=express();
 
-const staticDirectory = path.join(__dirname, 'images');
+const staticDirectory = path.join(__dirname, 'static');
 
 // Serve static files from the uploads directory
-app.use('/images', express.static(staticDirectory));
+app.use('/static', express.static(staticDirectory));
 
 // Set the views directory for EJS templates
 app.set('views', path.join(__dirname, 'views'));
@@ -21,7 +21,7 @@ app.use(session({secret:process.env.SESSIONKEY,resave:false,saveUninitialized:fa
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'images/') // Directory where uploaded files will be stored
+      cb(null, 'static/images') // Directory where uploaded files will be stored
     },
     filename: function (req, file, cb) {
       cb(null, Date.now()+path.extname(file.originalname)) // Use the original filename for the uploaded file
