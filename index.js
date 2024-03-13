@@ -4,6 +4,7 @@ const mysql=require('mysql2');
 const session=require('express-session');
 const multer  = require('multer');
 const path = require('path'); // Import the path module
+const { Console } = require('console');
 require('dotenv').config();
 const app=express();
 
@@ -221,6 +222,7 @@ app.post('/addGroup',upload.single('group_pic'),(req,res)=>{
 })
 
 app.post('/group_details',(req,res)=>{
+    const userID=req.session.user_id
     const groupId=req.body.groupid;
     connection.query('SELECT * FROM `grup` WHERE `groupid` = ?', [groupId], (error, groupResults) => {
         if (error) {
@@ -254,7 +256,6 @@ app.post('/group_details',(req,res)=>{
                     const memberIds = memberid.map(member => member.userId);
                     if(memberIds.length == 0)
                     {
-                        // const users = [];
                         const members = [];
                         return res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,members});
                     }
@@ -263,12 +264,46 @@ app.post('/group_details',(req,res)=>{
                             console.error('Error executing SQL query:', error);
                             return;
                         }
-                        res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,members,isadmin});
+                        const sql = `
+                                   SELECT CASE
+                                      WHEN user1 = ? THEN user2
+                                      WHEN user2 = ? THEN user1
+                                      ELSE NULL
+                                    END AS friend
+                                    FROM friends
+                                    WHERE user1 = ? OR user2 = ?;
+                                    `;
+                        connection.query(sql,[userID,userID,userID,userID], (error, member) => {
+                            if (error) {
+                                console.error('Error executing SQL query:', error);
+                                return;
+                            }
+                            const friendids=member.map(member=>member.friend);
+                                connection.query('SELECT Name,userId FROM user WHERE userId IN(?)', [friendids], (error, friends, fields) => {
+                                  if (error) {
+                                    console.error('Error fetching user name:', error);
+                                    reject(error);
+                                    return;
+                                  }
+                                  friendids.push(userID);
+                                  connection.query('SELECT Name,userId FROM `user` WHERE userId NOT IN(?)',[friendids],(error, users) => {
+                                    if (error) {
+                                        console.error('Error executing SQL query:', error);
+                                        return;
+                                    }
+                                    res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,friends,members,isadmin});
+                                });
+                                });
+                        });
                     });
                 });
             });
         });
     });
+})
+
+app.post('/add_friend',(req,res)=>{
+    //to be added
 })
 
 app.post('/add_member',(req,res)=>{
@@ -328,6 +363,7 @@ app.post('/requests', (req, res) => {
     });
 });
 
+// to create a user as a friend of another user when they are part of the same group
 app.post('/accept',(req,res)=>{
     const userId=req.session.user_id;
     const requestid=req.body.requestid;
@@ -346,18 +382,37 @@ app.post('/accept',(req,res)=>{
                 groupid:results[0].groupid
             }
             //console.log(new_membership);
-            connection.query('INSERT INTO `memberships` SET ?', new_membership, (error, results, fields) => {
+            connection.query('INSERT INTO `memberships` SET ?', new_membership, (error, inserted, fields) => {
                 if (error) {
                   console.error(error);
                   return;
                 }
                 console.log('New Membership Created Successfully:');
-                res.redirect('/profile');
+                connection.query('SELECT adminid FROM `grup` WHERE `groupid`= ?',[results[0].groupid], (error, adminid, fields) => {
+                    if (error) {
+                      console.log(error);
+                      return;
+                    }
+                    const friend={
+                        user1: adminid[0].adminid,
+                        user2: userId
+                    }
+                    connection.query('INSERT INTO `friends` SET ?',[friend], (error, results, fields) => {
+                        if (error) {
+                          console.log(error);
+                          return;
+                        }
+                        console.log("New friend inserted");
+                        res.redirect('/profile');
+                    });
+                });
+                
             });
 
         });
     });
 })
+
 
 app.post('/decline',(req,res)=>{
     const userId=req.session.user_id;
