@@ -29,6 +29,7 @@
 
         <!-- Add Member form -->
     <% if(isadmin==1){ %>
+        <% if(users.length>0){ %>
     <form action="/add_member" method="post" id="addMemberForm">
         <button type="button" id="showDropdownBtn">Invite Member</button>
         <div id="dropdownContainer" style="display: none;">
@@ -42,6 +43,8 @@
             <button type="submit">Add</button>
         </div>
     </form>
+        <% } %>
+        <% if(friends.length>0){ %>
     <form action="/add_friend" method="post" id="addMemberForm">
         <button type="button" id="showDropdownBtn2">Add Friend</button>
         <div id="dropdownContainer2" style="display: none;">
@@ -55,6 +58,7 @@
             <button type="submit">Add</button>
         </div>
     </form>
+        <% } %>
     <% } %>
 
     <script>

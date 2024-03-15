@@ -158,7 +158,6 @@ app.get('/MyGroups',async(req,res)=>{
               console.error(error);
               return;
             }
-            console.log(results);
             return res.render("MyGroups", {results});
         });
     }
@@ -278,7 +277,11 @@ app.post('/group_details',(req,res)=>{
                                 console.error('Error executing SQL query:', error);
                                 return;
                             }
-                            const friendids=member.map(member=>member.friend);
+                            let friendIds=member.map(member=>member.friend);
+                            let friendids = friendIds.filter(friendId => !memberIds.includes(friendId));
+                            let userids=friendIds.concat(memberIds);
+                            userids=userids.filter((value, index) => userids.indexOf(value) === index)
+                            if(friendids.length!=0){
                                 connection.query('SELECT Name,userId FROM user WHERE userId IN(?)', [friendids], (error, friends, fields) => {
                                   if (error) {
                                     console.error('Error fetching user name:', error);
@@ -286,7 +289,7 @@ app.post('/group_details',(req,res)=>{
                                     return;
                                   }
                                   friendids.push(userID);
-                                  connection.query('SELECT Name,userId FROM `user` WHERE userId NOT IN(?)',[friendids],(error, users) => {
+                                  connection.query('SELECT Name,userId FROM `user` WHERE userId NOT IN(?)',[userids],(error, users) => {
                                     if (error) {
                                         console.error('Error executing SQL query:', error);
                                         return;
@@ -294,6 +297,10 @@ app.post('/group_details',(req,res)=>{
                                     res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,friends,members,isadmin});
                                 });
                                 });
+                            }
+                            else{
+                                var friends=[];
+                            }
                         });
                     });
                 });
@@ -302,9 +309,94 @@ app.post('/group_details',(req,res)=>{
     });
 })
 
-app.post('/add_friend',(req,res)=>{
-    //to be added
-})
+app.post('/add_friend', async (req, res) => {
+    try {
+        const userId = req.body.Friendid;
+        const groupid = req.body.groupid;
+        const new_member = {
+            groupid: groupid,
+            userId: userId
+        };
+
+        // Insert new member into memberships table
+        await new Promise((resolve, reject) => {
+            connection.query('INSERT INTO `memberships` SET ?', new_member, (error, results, fields) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+                resolve();
+            });
+        });
+
+        // Retrieve member IDs in the same group
+        const results = await new Promise((resolve, reject) => {
+            connection.query('SELECT userId FROM `memberships` WHERE `groupid`=?', [groupid], (error, results, fields) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+                resolve(results);
+            });
+        });
+
+        let memberIds = results.map(member => member.userId);
+        memberIds = memberIds.filter(id => id != userId);
+
+        const sql = `
+            SELECT CASE
+                WHEN user1 = ? THEN user2
+                WHEN user2 = ? THEN user1
+                ELSE NULL
+            END AS friend
+            FROM friends
+            WHERE user1 = ? OR user2 = ?;
+        `;
+
+        const friendiDs = await new Promise((resolve, reject) => {
+            connection.query(sql, [userId, userId, userId, userId], (error, friendiDs, fields) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+                resolve(friendiDs);
+            });
+        });
+
+        let friendIds = friendiDs.map(member => member.friend);
+        let user2 = memberIds.filter(id => !friendIds.includes(id));
+
+        console.log(user2);
+        const user1 = userId;
+
+        if (user2.length != 0) {
+            for (const item of user2) {
+                let new_friend = {
+                    user1: user1,
+                    user2: item
+                };
+                await new Promise((resolve, reject) => {
+                    connection.query("INSERT INTO `friends` SET ?", [new_friend], (error, results) => {
+                        if (error) {
+                            console.log(error);
+                            reject(error);
+                            return;
+                        }
+                        resolve();
+                    });
+                });
+            }
+        }
+        res.redirect('/profile');
+    } catch (error) {
+        console.error(error);
+        // Handle errors appropriately
+    }
+});
+
 
 app.post('/add_member',(req,res)=>{
     const new_request={
@@ -363,55 +455,121 @@ app.post('/requests', (req, res) => {
     });
 });
 
-// to create a user as a friend of another user when they are part of the same group
-app.post('/accept',(req,res)=>{
-    const userId=req.session.user_id;
-    const requestid=req.body.requestid;
-    connection.query('UPDATE `requests` SET `status`=1 WHERE `request_id`= ?', [requestid], (error, result, fields) => {
-        if (error) {
-          console.error(error);
-          return;
-        }
-        connection.query('SELECT groupid FROM `requests` WHERE `request_id`=?', [requestid], (error, results, fields) => {
-            if (error) {
-              console.error(error);
-              return;
-            }
-            const new_membership={
-                userId:userId,
-                groupid:results[0].groupid
-            }
-            //console.log(new_membership);
-            connection.query('INSERT INTO `memberships` SET ?', new_membership, (error, inserted, fields) => {
+app.post('/accept', async (req, res) => {
+    try {
+        const userId = req.session.user_id;
+        const requestid = req.body.requestid;
+
+        await new Promise((resolve, reject) => {
+            connection.query('UPDATE `requests` SET `status`=1 WHERE `request_id`=?', [requestid], (error, results, fields) => {
                 if (error) {
-                  console.error(error);
-                  return;
+                    console.error(error);
+                    reject(error);
+                    return;
                 }
-                console.log('New Membership Created Successfully:');
-                connection.query('SELECT adminid FROM `grup` WHERE `groupid`= ?',[results[0].groupid], (error, adminid, fields) => {
-                    if (error) {
-                      console.log(error);
-                      return;
-                    }
-                    const friend={
-                        user1: adminid[0].adminid,
-                        user2: userId
-                    }
-                    connection.query('INSERT INTO `friends` SET ?',[friend], (error, results, fields) => {
+                resolve();
+            });
+        });
+        console.log(1);
+
+        const requestResults = await new Promise((resolve, reject) => {
+            connection.query('SELECT groupid FROM `requests` WHERE `request_id`=?', [requestid], (error, results, fields) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+                resolve(results);
+            });
+        });
+        console.log(2);
+
+        const new_membership = {
+            userId: userId,
+            groupid: requestResults[0].groupid
+        };
+        const groupid = requestResults[0].groupid;
+
+        await new Promise((resolve, reject) => {
+            connection.query('INSERT INTO `memberships` SET ?', new_membership, (error, results, fields) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+                resolve();
+            });
+        });
+        console.log(3);
+
+        const groupMembers = await new Promise((resolve, reject) => {
+            connection.query('SELECT userId FROM `memberships` WHERE `groupid`=?', [groupid], (error, results, fields) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+                resolve(results);
+            });
+        });
+        console.log(4);
+
+        let memberIds = groupMembers.map(member => member.userId);
+        memberIds = memberIds.filter(id => id != userId);
+
+        const sql = `
+            SELECT CASE
+                WHEN user1 = ? THEN user2
+                WHEN user2 = ? THEN user1
+                ELSE NULL
+            END AS friend
+            FROM friends
+            WHERE user1 = ? OR user2 = ?;
+        `;
+
+        const friendIds = await new Promise((resolve, reject) => {
+            connection.query(sql, [userId, userId, userId, userId], (error, results, fields) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+                resolve(results);
+            });
+        });
+        console.log(5);
+
+        let existingFriendIds = friendIds.map(friend => friend.friend);
+        let user2 = memberIds.filter(id => !existingFriendIds.includes(id));
+
+        console.log(user2);
+        const user1 = userId;
+
+        if (user2.length != 0) {
+            for (const item of user2) {
+                let new_friend = {
+                    user1: user1,
+                    user2: item
+                };
+                await new Promise((resolve, reject) => {
+                    connection.query("INSERT INTO `friends` SET ?", [new_friend], (error, results) => {
                         if (error) {
-                          console.log(error);
-                          return;
+                            console.log(error);
+                            reject(error);
+                            return;
                         }
-                        console.log("New friend inserted");
-                        res.redirect('/profile');
+                        resolve();
                     });
                 });
-                
-            });
-
-        });
-    });
-})
+            }
+        }
+        console.log(6);
+        res.redirect('/profile');
+    } catch (error) {
+        console.error(error);
+        // Handle errors appropriately
+    }
+});
 
 
 app.post('/decline',(req,res)=>{
