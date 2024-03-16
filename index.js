@@ -220,50 +220,73 @@ app.post('/addGroup',upload.single('group_pic'),(req,res)=>{
     });
 })
 
-app.post('/group_details',(req,res)=>{
-    const userID=req.session.user_id
-    const groupId=req.body.groupid;
-    connection.query('SELECT * FROM `grup` WHERE `groupid` = ?', [groupId], (error, groupResults) => {
-        if (error) {
-            console.error('Error executing SQL query:', error);
-            return;
-        }
+app.post('/group_details',async(req,res)=>{
+    try{
+        const userID=req.session.user_id
+        const groupId=req.body.groupid;  
+
+        const groupResults = await new Promise((resolve, reject) => {
+            connection.query('SELECT * FROM `grup` WHERE `groupid` = ?', [groupId], (error, groupResults, fields) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+                resolve(groupResults);
+            });
+        });
+
         let isadmin;
         const adminId = groupResults[0].adminid;
-        if(req.session.user_id==adminId){
+        if(userID==adminId){
             isadmin=1;
         }
         else{
             isadmin=0;
         }
-    
-        connection.query('SELECT Name,Email FROM `user` WHERE `userId` = ?', [adminId], (error, userResults) => {
-            if (error) {
-                console.error('Error executing SQL query:', error);
-                return;
-            }
-            connection.query('SELECT Name,userId FROM `user`', (error, users) => {
+
+        const userResults = await new Promise((resolve, reject) => {
+            connection.query('SELECT Name,Email FROM `user` WHERE `userId` = ?', [adminId], (error, userResults, fields) => {
                 if (error) {
-                    console.error('Error executing SQL query:', error);
+                    console.error(error);
+                    reject(error);
                     return;
                 }
-                connection.query('SELECT userId FROM `memberships` WHERE `groupid`=?',[groupId], (error, memberid) => {
+                resolve(userResults);
+            });
+        });
+
+
+        const memberid = await new Promise((resolve, reject) => {
+            connection.query('SELECT userId FROM `memberships` WHERE `groupid`=?', [groupId], (error, memberid, fields) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+                resolve(memberid);
+            });
+        });
+        let memberIds = memberid.map(member => member.userId);
+        memberIds=memberIds.filter(id=>id!=adminId);
+        let members=[]
+        let users=[];
+        let friends=[];
+        if(memberIds.length != 0)
+        {
+            members= await new Promise((resolve,reject)=>{
+                connection.query('SELECT * FROM `user` WHERE `userId` IN (?)', [memberIds], (error, members, fields) => {
                     if (error) {
-                        console.error('Error executing SQL query:', error);
+                        console.error(error);
+                        reject(error);
                         return;
                     }
-                    const memberIds = memberid.map(member => member.userId);
-                    if(memberIds.length == 0)
-                    {
-                        const members = [];
-                        return res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,members});
-                    }
-                    connection.query('SELECT * FROM `user` WHERE `userId` IN (?)',[memberIds], (error, members) => {
-                        if (error) {
-                            console.error('Error executing SQL query:', error);
-                            return;
-                        }
-                        const sql = `
+                    resolve(members);
+                });
+            })
+        }
+        if(isadmin==1){
+            const sql = `
                                    SELECT CASE
                                       WHEN user1 = ? THEN user2
                                       WHEN user2 = ? THEN user1
@@ -272,42 +295,56 @@ app.post('/group_details',(req,res)=>{
                                     FROM friends
                                     WHERE user1 = ? OR user2 = ?;
                                     `;
-                        connection.query(sql,[userID,userID,userID,userID], (error, member) => {
-                            if (error) {
-                                console.error('Error executing SQL query:', error);
-                                return;
-                            }
-                            let friendIds=member.map(member=>member.friend);
-                            let friendids = friendIds.filter(friendId => !memberIds.includes(friendId));
-                            let userids=friendIds.concat(memberIds);
-                            userids=userids.filter((value, index) => userids.indexOf(value) === index)
-                            if(friendids.length!=0){
-                                connection.query('SELECT Name,userId FROM user WHERE userId IN(?)', [friendids], (error, friends, fields) => {
-                                  if (error) {
-                                    console.error('Error fetching user name:', error);
-                                    reject(error);
-                                    return;
-                                  }
-                                  friendids.push(userID);
-                                  connection.query('SELECT Name,userId FROM `user` WHERE userId NOT IN(?)',[userids],(error, users) => {
-                                    if (error) {
-                                        console.error('Error executing SQL query:', error);
-                                        return;
-                                    }
-                                    res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,friends,members,isadmin});
-                                });
-                                });
-                            }
-                            else{
-                                var friends=[];
-                            }
-                        });
-                    });
+            const friendIDS= await new Promise((resolve,reject)=>{
+                connection.query(sql, [userID,userID,userID,userID], (error, friendIDS, fields) => {
+                    if (error) {
+                        console.error(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve(friendIDS);
                 });
-            });
-        });
-    });
-})
+            })
+            let friendIds=friendIDS.map(member=>member.friend);
+            let friendids = friendIds.filter(friendId => !memberIds.includes(friendId));
+            let userids=friendids.concat(memberIds);
+            userids=userids.filter((value, index) => userids.indexOf(value) === index)
+            userids.push(userID);
+            console.log(userids,friendids);
+
+            if(friendids.length!=0){
+                friends= await new Promise((resolve,reject)=>{
+                    connection.query('SELECT Name,userId FROM user WHERE userId IN (?)', [friendids], (error, friends, fields) => {
+                        if (error) {
+                            console.error(error);
+                            reject(error);
+                            return;
+                        }
+                        resolve(friends);
+                    });
+                })
+            }
+
+            if(userids.length!=0){
+                users= await new Promise((resolve,reject)=>{
+                    connection.query('SELECT Name,userId FROM `user` WHERE userId NOT IN(?)', [userids], (error, users, fields) => {
+                        if (error) {
+                            console.error(error);
+                            reject(error);
+                            return;
+                        }
+                        resolve(users);
+                    });
+                })
+            }
+
+        }
+        console.log(friends);
+        res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,friends,members,isadmin});
+    }catch(error){
+        console.log(error);
+    }
+});
 
 app.post('/add_friend', async (req, res) => {
     try {
