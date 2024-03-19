@@ -460,7 +460,8 @@ app.post('/requests', (req, res) => {
             return;
         }
         if(requestResults.length==0){
-            res.send("No New Requests");
+            res.render("nonewrequests");
+            // res.send("No New Requests");
         }
         else{
         // Extract groupids from the request results
