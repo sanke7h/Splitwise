@@ -47,13 +47,13 @@
         .group-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 30px;
             width: 100%;
-            max-width: 800px;
+            max-width: 1000px;
         }
 
         .group-item {
-            border: 1px solid #e0e0e0;
+            border: 1px solid #ffffff;
             border-radius: 8px;
             padding: 20px;
             text-align: center;
@@ -264,7 +264,12 @@
         </nav>
         <div class="center-content">
             <div class="header">My Groups</div>
+            <% if(results.length==0){ %>
+                
+                <h1 style="text-align: center;">You Are Not Part Of Any Group</h1>
+            <% } %> 
             <div class="group-grid">
+                
                 <% for(let i=0; i < results.length; i++){ %>
                     <div class="group-item">
                         <div id="groupName"><%= results[i].groupname %>
