@@ -817,6 +817,3 @@ app.post('/payment/process',(req,res)=>{
     res.redirect('/profile');
 })
 
-
-app.get('/err',(req,res)=>{
-})
