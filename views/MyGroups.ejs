@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Profile</title>
+    <title>My Groups</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="shortcut icon" href="/static/favicon.svg" type="image/svg+xml">
@@ -26,6 +26,7 @@
         .sidebar {
             flex: 0 0 auto;
             background-color: #ffffff;
+            position:fixed;
         }
 
         .center-content {
@@ -92,8 +93,8 @@
             text-shadow: 0px 0px 5px rgba(255, 255, 255, 0.8);
         }
 
-        button {
-            background-color: #007bff;
+        #b1 {
+            background-color:#5a58e9;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -102,8 +103,8 @@
             transition: background-color 0.3s ease;
         }
 
-        button:hover {
-            background-color: #0056b3;
+        #b1:hover {
+            background-color: #ffc500;
         }
 
         .oval-image {
@@ -229,7 +230,7 @@
                         </form>
                     </li>
                     <!-- <li>
-                  <a href="#reports" title="Reports" class="tooltip">
+                  <a href="#reports" title="Test" class="tooltip">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-description" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                       <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
@@ -237,10 +238,11 @@
                       <path d="M9 17h6"></path>
                       <path d="M9 13h6"></path>
                     </svg>
-                    <span class="link hide">Reports</span>
-                    <span class="tooltip__content">Reports</span>
+                    <span class="link hide">Test</span>
+                    <span class="tooltip__content">Test</span>
                   </a>
                 </li> -->
+
                 </ul>
             </div>
             <div class="sidebar-bottom hide">
@@ -270,7 +272,7 @@
                         <img class="oval-image" src="<%= results[i].group_pic %>" alt="Group Image">
                         <form action="/group_details" method="post">
                             <input type="hidden" name="groupid" value="<%= results[i].groupid %>">
-                            <button type="submit">View Details</button>
+                            <button type="submit" id="b1">View Details</button>
                         </form>
                     </div>
                     <% } %>

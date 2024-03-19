@@ -1,11 +1,6 @@
 function submitForm(url) {
-    document.getElementById('myForm').action = url;
-    document.getElementById('myForm').submit();
-}
-
-function submitForm(url) {
-    document.getElementById('myForm').action = url;
-    document.getElementById('myForm').submit();
+  document.getElementById('myForm').action = url;
+  document.getElementById('myForm').submit();
 }
 
 
@@ -23,11 +18,11 @@ const current = window.location.href;
 const allLinks = document.querySelectorAll(".sidebar-links a");
 
 allLinks.forEach((elem) => {
-  elem.addEventListener('click', function() {
+  elem.addEventListener('click', function () {
     const hrefLinkClick = elem.href;
 
     allLinks.forEach((link) => {
-      if (link.href == hrefLinkClick){
+      if (link.href == hrefLinkClick) {
         link.classList.add("active");
       } else {
         link.classList.remove('active');
@@ -37,6 +32,6 @@ allLinks.forEach((elem) => {
 });
 
 
-    
+
 
 
