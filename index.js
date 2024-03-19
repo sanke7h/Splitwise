@@ -137,10 +137,18 @@ app.post('/login', async (req, res) => {
                 req.session.user_id = results[0].userId;
                 res.redirect('/profile');
             } else {
-                res.send("Incorrect Password");
+                const errMessage="Incorrect Password!"
+                const altButton="Try Again"
+                const altRoute="/login"
+                res.render("err",{error:errMessage,altB:altButton,altR:altRoute})
+                //res.send("Incorrect Password");
             }
         } else {
-            res.send("This Email Doesn't exist");
+            const errMessage="This Email Doesn't exist!"
+            const altButton="Sign Up"
+            const altRoute="/signup"
+            res.render("err",{error:errMessage,altB:altButton,altR:altRoute})
+            //res.send("This Email Doesn't exist");
         }
     });
 });
@@ -460,8 +468,11 @@ app.post('/requests', (req, res) => {
             return;
         }
         if(requestResults.length==0){
-            res.render("nonewrequests");
-            // res.send("No New Requests");
+            const errMessage="No New Requests!"
+            const altButton="Return Home"
+            const altRoute="/profile"
+            res.render("err",{error:errMessage,altB:altButton,altR:altRoute})
+            //res.send("No New Requests");
         }
         else{
         // Extract groupids from the request results
@@ -804,4 +815,8 @@ app.post('/payment/process',(req,res)=>{
     //to be added
     console.log(req.body);
     res.redirect('/profile');
+})
+
+
+app.get('/err',(req,res)=>{
 })

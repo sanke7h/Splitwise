@@ -3,19 +3,17 @@
    <head>
       <meta charset="utf-8">
       <title>No New Requests</title>
-      <link rel="stylesheet" href="/static/css/nonewrequests.css">
+      <link rel="shortcut icon" href="/static/favicon.svg" type="image/svg+xml">
+      <link rel="stylesheet" href="/static/css/err.css">
    </head>
    <body>
       <div id="error-page">
          <div class="content">
-            <h4 data-text="Opps! Page not found">
-               No new Requests
+            <h4 >
+               <%=error%>
             </h4>
-            <p>
-               Sorry, You have no new requests. 
-            </p>
             <div class="btns">
-               <a href="/profile">return home</a>
+               <a href=<%=altR%>><%=altB%></a>
             </div>
          </div>
       </div>
