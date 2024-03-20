@@ -9,9 +9,6 @@ expand_btn.addEventListener("click", () => {
   document.body.classList.toggle("collapsed");
 });
 
-// Initially collapse the sidebar
-document.body.classList.add("collapsed");
-
 const current = window.location.href;
 
 const allLinks = document.querySelectorAll(".sidebar-links a");
