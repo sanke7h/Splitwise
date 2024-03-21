@@ -335,16 +335,6 @@ body.collapsed .expand-btn img {
     box-sizing: border-box;
 }
 
-*:focus {
-    outline: 1px solid var(--primary);
-    outline-offset: 0;
-}
-
-*::selection {
-    background: var(--primary);
-    color: var(--white);
-}
-
 *::-webkit-scrollbar {
     width: 0.5rem;
     height: 0.5rem;
@@ -356,17 +346,6 @@ body.collapsed .expand-btn img {
     background: var(--scrollbar-thumb);
     border-radius: 9.99rem;
 }
-
-/* body {
-    font-family: 'Manrope', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    height: 100vh;
-    user-select: none;
-} */
 
 .profile {
     background: var(--profile-bg);
@@ -450,29 +429,6 @@ body.collapsed .expand-btn img {
     margin: 0 auto;
     margin-top: -50%;
     border: 4px solid var(--profile-bg);
-}
-
-
-.btn {
-    background: var(--primary);
-    color: var(--white);
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    width: 100%;
-    font-size: 1rem;
-    font-weight: 600;
-    min-height: 3rem;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.btn--primary {
-    background: var(--primary);
-}
-
-.btn--primary:hover {
-    background: var(--primary-darker);
 }
 
 .profile main {
