@@ -468,11 +468,7 @@ app.post('/requests', (req, res) => {
             return;
         }
         if(requestResults.length==0){
-            const errMessage="No New Requests!"
-            const altButton="Return Home"
-            const altRoute="/profile"
-            res.render("err",{error:errMessage,altB:altButton,altR:altRoute})
-            //res.send("No New Requests");
+            res.render("notrequests");
         }
         else{
         // Extract groupids from the request results
