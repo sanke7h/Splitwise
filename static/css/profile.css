@@ -357,7 +357,7 @@ body.collapsed .expand-btn img {
     border-radius: 9.99rem;
 }
 
-body {
+/* body {
     font-family: 'Manrope', sans-serif;
     background: var(--bg);
     color: var(--text);
@@ -366,7 +366,7 @@ body {
     flex-direction: column;
     height: 100vh;
     user-select: none;
-}
+} */
 
 .profile {
     background: var(--profile-bg);
