@@ -1,11 +1,10 @@
-
 :root {
-    --primary-color: #272727;
-    --text: white;
-    --background: #F4F5FC;
-    --sidebar-gray-background: #DCE1EB;
-    --red: #F55E5E;
-    --item-hover: #F0F0F0;
+  --primary-color: #272727;
+  --text: white;
+  --background: #F4F5FC;
+  --sidebar-gray-background: #DCE1EB;
+  --red: #F55E5E;
+  --item-hover: #F0F0F0;
 }
 
 body {
@@ -20,26 +19,26 @@ html {
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 nav {
-    position: sticky;
-    top: 0;
-    left: 0;
-    min-height: 53.75rem;
-    height: 100%;
-    border-radius: 1rem;
-    background-color: var(--primary-color);
-    width: 18rem;
-    padding: 1rem 0.625rem;
-    display: flex;
-    color: white;
-    flex-direction: column;
-    background-color: #FCFCFD;
-    transition: all 0.1s ease-in-out;
+  position: sticky;
+  top: 0;
+  left: 0;
+  min-height: 53.75rem;
+  height: 100%;
+  border-radius: 1rem;
+  background-color: var(--primary-color);
+  width: 18rem;
+  padding: 1rem 0.625rem;
+  display: flex;
+  color: white;
+  flex-direction: column;
+  background-color: #FCFCFD;
+  transition: all 0.1s ease-in-out;
 }
 
 main {
@@ -111,9 +110,7 @@ body.collapsed .sidebar-top {
 /*? menu links */
 .sidebar-links {
   padding: 0.5rem 0px;
-  border-top: 1px solid var(
-    --sidebar-gray-background
-  );
+  border-top: 1px solid var(--sidebar-gray-background);
 }
 
 .sidebar-links ul {
@@ -172,9 +169,7 @@ body.collapsed .sidebar-top {
 
 .sidebar-links .active {
   text-decoration: none;
-  background-color: var(
-    --primary-color
-  );
+  background-color: var(--primary-color);
   color: var(--background);
 }
 
@@ -292,9 +287,7 @@ body.collapsed .expand-btn img {
 
 .tooltip .tooltip__content {
   visibility: hidden;
-  background-color: var(
-    --primary-color
-  );
+  background-color: var(--primary-color);
   color: var(--text);
   text-align: center;
   border-radius: 0.375rem;

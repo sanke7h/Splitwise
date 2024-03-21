@@ -20,9 +20,12 @@
             width: 128px;
             height: 128px;
             border: 8px solid rgba(255, 255, 255, 0.7);
-            position: relative; /* Changed position to relative */
-            margin: 0 auto; /* Added margin to center horizontally */
-            margin-top: 20px; /* Adjusted top margin to create space below headline */
+            position: relative;
+            /* Changed position to relative */
+            margin: 0 auto;
+            /* Added margin to center horizontally */
+            margin-top: 20px;
+            /* Adjusted top margin to create space below headline */
         }
 
         .profile-pic {
@@ -31,9 +34,12 @@
         }
 
         .p-image {
-            position: relative; /* Changed position to relative */
-            margin-top: -40px; /* Adjusted top margin to align with profile picture */
-            margin-left: 80px; /* Adjusted left margin to align with profile picture */
+            position: relative;
+            /* Changed position to relative */
+            margin-top: -40px;
+            /* Adjusted top margin to align with profile picture */
+            margin-left: 80px;
+            /* Adjusted left margin to align with profile picture */
             color: #666666;
             transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
         }
@@ -55,21 +61,31 @@
         input[type="text"],
         input[type="email"],
         input[type="password"] {
-            margin-top: 20px; /* Added margin-top to create space between input boxes */
-            width: calc(100% - 20px); /* Adjusted width to fill the container */
-            box-sizing: border-box; /* Added box-sizing to include padding and border in width calculation */
-            padding: 10px; /* Added padding for better appearance */
-            margin-bottom: 10px; /* Added margin-bottom to separate input boxes */
+            margin-top: 20px;
+            /* Added margin-top to create space between input boxes */
+            width: calc(100% - 20px);
+            /* Adjusted width to fill the container */
+            box-sizing: border-box;
+            /* Added box-sizing to include padding and border in width calculation */
+            padding: 10px;
+            /* Added padding for better appearance */
+            margin-bottom: 10px;
+            /* Added margin-bottom to separate input boxes */
         }
 
         /* Adjusted the form container */
         .form-container {
-            margin-top: 30px; /* Increased margin-top */
-            height: auto; /* Changed height to auto */
-            padding-bottom: 20px; /* Added padding to bottom to separate form from other elements */
+            margin-top: 30px;
+            /* Increased margin-top */
+            height: auto;
+            /* Changed height to auto */
+            padding-bottom: 20px;
+            /* Added padding to bottom to separate form from other elements */
         }
-		h1 {
-            margin-top: 10px; /* Increased margin-top */
+
+        h1 {
+            margin-top: 10px;
+            /* Increased margin-top */
         }
     </style>
 </head>
@@ -82,8 +98,7 @@
                 <h1>Sign Up</h1>
                 <!-- Profile picture upload -->
                 <div class="circle">
-                    <img class="profile-pic"
-                        src="/static/images/images.png">
+                    <img class="profile-pic" src="/static/images/images.png">
                 </div>
                 <div class="p-image">
                     <i class="fa fa-camera upload-button"></i>
@@ -104,14 +119,14 @@
                     <h1>Splitwise</h1>
                     <p>Sign Up with your personal details to use all of site features</p>
                 </div>
-				
+
             </div>
-			
+
         </div>
     </div>
 
 
-	<!-- Script is to show the profile picture once uploaded uses jquery -->
+    <!-- Script is to show the profile picture once uploaded uses jquery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {

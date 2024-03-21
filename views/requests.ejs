@@ -52,7 +52,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: box-shadow 0.3s ease;
-        } 
+        }
 
         #con2:hover {
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
@@ -92,9 +92,8 @@
         h1 {
             font-size: 36px;
             color: #272727;
-            margin-bottom: 50px; /* Add some margin-bottom to create space */
+            margin-bottom: 50px;
         }
-
     </style>
 </head>
 
@@ -238,36 +237,36 @@
         <div class="center-content">
             <h1>New Requests</h1>
 
-    <!-- Start ordered list outside the loop -->
-    <ol id="con">
-        <!-- Iterate over requests -->
-        <% requests.forEach(request=> { %>
-            <!-- Fetch corresponding group information -->
-            <% const group=groups.find(group=> group.groupid === request.groupid); %>
+            <!-- Start ordered list outside the loop -->
+            <ol id="con">
+                <!-- Iterate over requests -->
+                <% requests.forEach(request=> { %>
+                    <!-- Fetch corresponding group information -->
+                    <% const group=groups.find(group=> group.groupid === request.groupid); %>
 
-                <!-- Fetch corresponding admin information -->
-                <% const admin=users.find(user=> user.userId === group.adminid); %>
+                        <!-- Fetch corresponding admin information -->
+                        <% const admin=users.find(user=> user.userId === group.adminid); %>
 
-                    <!-- Display details of each request within a list item -->
-                    <li id="con2">
-                        <!-- <h2>Request Details</h2> -->
-                        <p>Group ID: <%= request.groupid %>
-                        </p>
-                        <p>Admin Name: <%= admin.Name %>
-                        </p>
-                        <p>Admin Email: <%= admin.Email %>
-                        </p>
-                        <form action="/accept" method="post">
-                            <input type="hidden" name="requestid" value="<%= request.request_id %>">
-                            <button type="submit" class="bb">Accept Request</button>
-                        </form>
-                        <form action="/decline" method="post">
-                            <input type="hidden" name="requestid" value="<%= request.request_id %>">
-                            <button type="submit" class="bb">Decline Request</button>
-                        </form>
-                    </li>
-                    <% }); %>
-    </ol>
+                            <!-- Display details of each request within a list item -->
+                            <li id="con2">
+                                <!-- <h2>Request Details</h2> -->
+                                <p>Group ID: <%= request.groupid %>
+                                </p>
+                                <p>Admin Name: <%= admin.Name %>
+                                </p>
+                                <p>Admin Email: <%= admin.Email %>
+                                </p>
+                                <form action="/accept" method="post">
+                                    <input type="hidden" name="requestid" value="<%= request.request_id %>">
+                                    <button type="submit" class="bb">Accept Request</button>
+                                </form>
+                                <form action="/decline" method="post">
+                                    <input type="hidden" name="requestid" value="<%= request.request_id %>">
+                                    <button type="submit" class="bb">Decline Request</button>
+                                </form>
+                            </li>
+                            <% }); %>
+            </ol>
 
 
 

@@ -26,7 +26,7 @@
         .sidebar {
             flex: 0 0 auto;
             background-color: #ffffff;
-            position:fixed;
+            position: fixed;
         }
 
         .center-content {
@@ -94,7 +94,7 @@
         }
 
         #b1 {
-            background-color:#5a58e9;
+            background-color: #5a58e9;
             color: white;
             padding: 10px 20px;
             border: none;
@@ -117,7 +117,7 @@
             margin-bottom: 15px;
         }
 
-        #groupName{
+        #groupName {
             font-size: 16px;
             font-weight: bold;
             color: #272727;
@@ -266,23 +266,24 @@
         <div class="center-content">
             <div class="header">My Groups</div>
             <% if(results.length==0){ %>
-                
+
                 <h1 style="text-align: center;">You Are Not Part Of Any Group</h1>
-            <% } %> 
-            <div class="group-grid">
-                
-                <% for(let i=0; i < results.length; i++){ %>
-                    <div class="group-item">
-                        <div id="groupName"><%= results[i].groupname %>
-                        </div>
-                        <img class="oval-image" src="<%= results[i].group_pic %>" alt="Group Image">
-                        <form action="/group_details" method="post">
-                            <input type="hidden" name="groupid" value="<%= results[i].groupid %>">
-                            <button type="submit" id="b1">View Details</button>
-                        </form>
+                <% } %>
+                    <div class="group-grid">
+
+                        <% for(let i=0; i < results.length; i++){ %>
+                            <div class="group-item">
+                                <div id="groupName">
+                                    <%= results[i].groupname %>
+                                </div>
+                                <img class="oval-image" src="<%= results[i].group_pic %>" alt="Group Image">
+                                <form action="/group_details" method="post">
+                                    <input type="hidden" name="groupid" value="<%= results[i].groupid %>">
+                                    <button type="submit" id="b1">View Details</button>
+                                </form>
+                            </div>
+                            <% } %>
                     </div>
-                    <% } %>
-            </div>
         </div>
     </div>
     <script src="/static/js/mygroups.js"></script>

@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="shortcut icon" href="/static/favicon.svg" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet"> -->
     <link rel="stylesheet" href="/static/css/profile.css">
     <style>
         body,
@@ -26,9 +25,7 @@
         .sidebar {
             flex: 0 0 auto;
             width: 250px;
-            /* Adjust width as needed */
             background-color: #f2f2f2;
-            /* Example background color */
         }
 
         .center-content {
@@ -68,9 +65,6 @@
                             </a>
                         </li>
 
-
-
-
                         <li>
                             <a href="/MyGroups" title="" class="tooltip">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users"
@@ -102,8 +96,6 @@
                             </a>
                         </li>
 
-
-
                         <li>
                             <a href="#" title="" class="tooltip" onclick="submitForm('/requests')">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -120,8 +112,6 @@
                                 <button type="submit">Pending Requests</button>
                             </form>
                         </li>
-
-
 
                         <li>
                             <a href="#" title="" class="tooltip" onclick="submitForm('/logout')">
@@ -182,90 +172,94 @@
         <div class="center-content">
             <div class="profile">
                 <% for(let c of results){ %>
-                <header class="profile__header">
-                    <div class="profile__highlight__wrapper">
-                        <div class="profile__highlight">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin" width="24"
-                                height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                                <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1" />
-                                <path d="M12 7v10" />
-                            </svg>
+                    <header class="profile__header">
+                        <div class="profile__highlight__wrapper">
+                            <div class="profile__highlight">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin"
+                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                    <path
+                                        d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1" />
+                                    <path d="M12 7v10" />
+                                </svg>
+                            </div>
+
                         </div>
-        
-                    </div>
-                    <div class="profile__avatar">
-                        <img src="<%=c.profile_pic %>" loading="lazy" alt="Mentor profile">
-                    </div>
-                    <div class="profile__highlight__wrapper">
-                        <div class="profile__highlight">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin" width="24"
-                                height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                                <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1" />
-                                <path d="M12 7v10" />
-                            </svg>
-        
+                        <div class="profile__avatar">
+                            <img src="<%=c.profile_pic %>" loading="lazy" alt="Profile Picture">
                         </div>
-        
+                        <div class="profile__highlight__wrapper">
+                            <div class="profile__highlight">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin"
+                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                    <path
+                                        d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1" />
+                                    <path d="M12 7v10" />
+                                </svg>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="profile__name">
+                        <h2>
+                            <%= c.Name %><img src="/static/images/verified.svg" alt="Verified Tick">
+                        </h2>
+                        <p>
+                            <%= c.Email %>
+                        </p>
+                        <% } %>
                     </div>
-                </header>
-                <div class="profile__name">
-                    <h2><%= c.Name %><img src="/static/images/verified.svg" alt="Verified Ticker"></h2>
-                    <p><%= c.Email %></p>
-                    <% } %>
-                </div>
-        
-                <main>
-                    <div class="tabs-wrapper">
-                        <ul class="tabs">
-                            <li class="active">
-                                <a id="tab1" href="#">My Transactions</a>
-                            </li>
-                            
-                            <li id="active-bg"></li>
-                        </ul>
-                    </div>
-                    <div id="tab1-content" class="tab-content tab-content--active">
-        
-        
-                        <!-- Render Transactions here  -->
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-                        <div>No Pending Transactions</div>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-                        <!-- Render Transactions here  -->
-                        
-                    </div>
-                </main>
-                <!-- <button class="btn btn--primary">
+
+                    <main>
+                        <div class="tabs-wrapper">
+                            <ul class="tabs">
+                                <li class="active">
+                                    <a id="tab1" href="#">My Transactions</a>
+                                </li>
+
+                                <li id="active-bg"></li>
+                            </ul>
+                        </div>
+                        <div id="tab1-content" class="tab-content tab-content--active">
+
+
+                            <!-- Render Transactions here  -->
+
+
+
+
+
+
+
+
+
+
+
+                            <div>No Pending Transactions</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                            <!-- Render Transactions here  -->
+
+                        </div>
+                    </main>
+                    <!-- <button class="btn btn--primary">
                     Test Button
                 </button> -->
-        
+
             </div>
         </div>
     </div>

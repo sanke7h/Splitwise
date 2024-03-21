@@ -318,6 +318,7 @@ body {
   background-position: center;
   background-size: cover;
 }
+
 .header .btn {
   display: none;
 }
@@ -504,10 +505,12 @@ body {
     width: 100%;
     margin-inline: auto;
   }
+
   .header .container {
     max-width: unset;
   }
 }
+
 @media (min-width: 768px) {
   :root {
     --fs-1: 5.5rem;
