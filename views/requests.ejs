@@ -1,39 +1,281 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <title>New Requests</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="shortcut icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/requests.css">
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            height: 100%;
+        }
+
+        .sidebar {
+            flex: 0 0 auto;
+            background-color: #ffffff;
+            position: fixed;
+        }
+
+        .center-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+
+
+        #con {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #con2 {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        } 
+
+        #con2:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        form {
+            display: inline-block;
+        }
+
+        .bb {
+            background-color: #5a58e9;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .bb:hover {
+            background-color: #f1bc3d;
+            color: black;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #272727;
+            margin-bottom: 50px; /* Add some margin-bottom to create space */
+        }
+
+    </style>
 </head>
-<body>
-    <h1>Requests</h1>
+
+<body class="collapsed">
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-top">
+                <a href="/profile" class="logo__wrapper">
+                    <img src="/static/images/logo.png" alt="Logo" class="logo">
+                    <img src="/static/images/logo-small.png" alt="Logo" class="logo-small">
+                </a>
+            </div>
+            <div class="sidebar-links">
+                <ul>
+                    <li>
+
+                        <a href="/profile" title="" class="tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M5 12l-2 0l9 -9l9 9l-2 0"></path>
+                                <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path>
+                                <path d="M10 12h4v4h-4z"></path>
+                            </svg>
+                            <span class="link hide">Home</span>
+                            <span class="tooltip__content">Home</span>
+                        </a>
+                    </li>
+
+
+
+
+                    <li>
+                        <a href="/MyGroups" title="" class="tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users"
+                                width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
+                            </svg>
+                            <span class="link hide">My Groups</span>
+                            <span class="tooltip__content">My Groups</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/addGroup" title="" class="tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path
+                                    d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z">
+                                </path>
+                            </svg>
+                            <span class="link hide">Create Group</span>
+                            <span class="tooltip__content">Create Group</span>
+                        </a>
+                    </li>
+
+
+
+                    <li>
+                        <a href="#" title="" class="tooltip active" onclick="submitForm('/requests')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M8 16l2 -6l6 -2l-2 6l-6 2"></path>
+                                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                            </svg>
+                            <span class="link hide">Pending Requests</span>
+                            <span class="tooltip__content">Pending Requests</span>
+                        </a>
+                        <form id="myForm" action="/requests" method="post" style="display: none;">
+                            <button type="submit">Pending Requests</button>
+                        </form>
+                    </li>
+
+
+
+                    <li>
+                        <a href="#" title="" class="tooltip" onclick="submitForm('/logout')">
+                            <div style="position: relative;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout"
+                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path
+                                        d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2">
+                                    </path>
+                                    <path d="M9 12h12l-3 -3"></path>
+                                    <path d="M18 15l3 -3"></path>
+                                </svg>
+                                <div class="notification"></div>
+                            </div>
+                            <span class="link hide">Logout</span>
+                            <span class="tooltip__content">Logout</span>
+                        </a>
+                        <form id="myForm" action="/logout" method="post" style="display: none;">
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
+                    <!-- <li>
+                  <a href="#reports" title="Test" class="tooltip">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-description" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                      <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                      <path d="M9 17h6"></path>
+                      <path d="M9 13h6"></path>
+                    </svg>
+                    <span class="link hide">Test</span>
+                    <span class="tooltip__content">Test</span>
+                  </a>
+                </li> -->
+
+                </ul>
+            </div>
+            <div class="sidebar-bottom hide">
+                <img src="/static/images/diamond.png" alt="Diamond">
+                <p>
+                    Welcome to Splitwise!
+                </p>
+                <button>
+                    Smart Sharing!
+                </button>
+            </div>
+            <div class="expand-btn" style="display: hidden;">
+                <img src="/static/images/right-collapse.svg" alt="Left Collapse">
+                <span class="hide">
+                    Collapse
+                </span>
+            </div>
+            <!-- Other sidebar content if needed -->
+        </nav>
+        <div class="center-content">
+            <h1>New Requests</h1>
 
     <!-- Start ordered list outside the loop -->
-    <ol>
+    <ol id="con">
         <!-- Iterate over requests -->
-        <% requests.forEach(request => { %>
+        <% requests.forEach(request=> { %>
             <!-- Fetch corresponding group information -->
-            <% const group = groups.find(group => group.groupid === request.groupid); %>
+            <% const group=groups.find(group=> group.groupid === request.groupid); %>
 
-            <!-- Fetch corresponding admin information -->
-            <% const admin = users.find(user => user.userId === group.adminid); %>
+                <!-- Fetch corresponding admin information -->
+                <% const admin=users.find(user=> user.userId === group.adminid); %>
 
-            <!-- Display details of each request within a list item -->
-            <li>
-                <h2>Request Details</h2>
-                <p>Group ID: <%= request.groupid %></p>
-                <p>Admin Name: <%= admin.Name %></p>
-                <p>Admin Email: <%= admin.Email %></p>
-                <form action="/accept" method="post">
-                    <input type="hidden" name="requestid" value="<%= request.request_id %>">
-                    <button type="submit">Accept Request</button>
-                </form>
-                <form action="/decline" method="post">
-                    <input type="hidden" name="requestid" value="<%= request.request_id %>">
-                    <button type="submit">Decline Request</button>
-                </form>
-            </li>
-        <% }); %>
+                    <!-- Display details of each request within a list item -->
+                    <li id="con2">
+                        <!-- <h2>Request Details</h2> -->
+                        <p>Group ID: <%= request.groupid %>
+                        </p>
+                        <p>Admin Name: <%= admin.Name %>
+                        </p>
+                        <p>Admin Email: <%= admin.Email %>
+                        </p>
+                        <form action="/accept" method="post">
+                            <input type="hidden" name="requestid" value="<%= request.request_id %>">
+                            <button type="submit" class="bb">Accept Request</button>
+                        </form>
+                        <form action="/decline" method="post">
+                            <input type="hidden" name="requestid" value="<%= request.request_id %>">
+                            <button type="submit" class="bb">Decline Request</button>
+                        </form>
+                    </li>
+                    <% }); %>
     </ol>
+
+
+
+
+
+        </div>
+    </div>
+    <script src="/static/js/requests.js"></script>
 </body>
+
 </html>
