@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="shortcut icon" href="/static/favicon.svg" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/profile.css">
     <style>
         body,
@@ -176,27 +177,98 @@
                     </span>
                 </div>
             </nav>
-
-
         </nav>
+
         <div class="center-content">
-            <div>
-                <h1>My Profile</h1>
+            <div class="profile">
                 <% for(let c of results){ %>
-                    <div>Username:<%= c.Name %>
+                <header class="profile__header">
+                    <div class="profile__highlight__wrapper">
+                        <div class="profile__highlight">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin" width="24"
+                                height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1" />
+                                <path d="M12 7v10" />
+                            </svg>
+                        </div>
+        
                     </div>
-                    <div>EmailId:<%= c.Email %>
+                    <div class="profile__avatar">
+                        <img src="<%=c.profile_pic %>" loading="lazy" alt="Mentor profile">
                     </div>
-                    <img src="<%=c.profile_pic %>"></img>
+                    <div class="profile__highlight__wrapper">
+                        <div class="profile__highlight">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-coin" width="24"
+                                height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1" />
+                                <path d="M12 7v10" />
+                            </svg>
+        
+                        </div>
+        
+                    </div>
+                </header>
+                <div class="profile__name">
+                    <h2><%= c.Name %><img src="/static/images/verified.svg" alt="Verified Ticker"></h2>
+                    <p><%= c.Email %></p>
                     <% } %>
-                        <h1>My Transactions</h1>
+                </div>
+        
+                <main>
+                    <div class="tabs-wrapper">
+                        <ul class="tabs">
+                            <li class="active">
+                                <a id="tab1" href="#">My Transactions</a>
+                            </li>
+                            
+                            <li id="active-bg"></li>
+                        </ul>
+                    </div>
+                    <div id="tab1-content" class="tab-content tab-content--active">
+        
+        
+                        <!-- Render Transactions here  -->
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
                         <div>No Pending Transactions</div>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+                        <!-- Render Transactions here  -->
+                        
+                    </div>
+                </main>
+                <!-- <button class="btn btn--primary">
+                    Test Button
+                </button> -->
+        
             </div>
         </div>
     </div>
-
-
-
     <script src="/static/js/profile.js"></script>
 </body>
 
