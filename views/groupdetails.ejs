@@ -40,12 +40,14 @@
                 <% }); %>
             </select>
             <input type="hidden" name="groupid" value="<%= group.groupid %>">
-            <button type="submit">Add</button>
+            <button type="submit">Invite</button>
         </div>
     </form>
         <% } %>
+
         <% if(friends.length>0){ %>
     <form action="/add_friend" method="post" id="addMemberForm">
+        <!-- <input type="hidden" name="friends" value="<%= friends.length %>"> -->
         <button type="button" id="showDropdownBtn2">Add Friend</button>
         <div id="dropdownContainer2" style="display: none;">
             <label for="Friendid">Select Friend:</label>
@@ -68,6 +70,8 @@
         });
         document.getElementById('showDropdownBtn2').addEventListener('click', function() {
             document.getElementById('dropdownContainer2').style.display = 'block';
+            console.log(89392);
+            console.log(friends);
         });
     </script>
     </body>

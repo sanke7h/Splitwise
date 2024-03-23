@@ -17,6 +17,11 @@
             <label for="Amount">Enter Total Amount</label>
             <input id="Amount" type="number" name="Amount" required>
         </div>
+        <div>
+            <label>Split Type:</label>
+            <input type="radio" name="splitType" value="equal" checked> Equally
+            <input type="radio" name="splitType" value="custom"> Custom
+        </div>
         <div id="usersContainer">
             <!-- Selected users will be displayed here -->
         </div>
@@ -60,7 +65,6 @@
                 usersContainer.appendChild(userInputElement);
                 
                 // Add input field for the selected userName
-                //var usersContainer = document.getElementById('usersContainer');
                 var userInputElement2 = document.createElement('input');
                 userInputElement2.type = 'text';
                 userInputElement2.value = selectedUserName; // Set userId as the value
@@ -68,6 +72,16 @@
                 userInputElement2.readOnly = true;
                 usersContainer.appendChild(userInputElement2);
                 
+                // If custom split, add input field for the ratio
+                if (document.querySelector('input[name="splitType"]:checked').value === 'custom') {
+                    var ratioInputElement = document.createElement('input');
+                    ratioInputElement.type = 'number';
+                    ratioInputElement.placeholder = 'Ratio';
+                    ratioInputElement.name = 'ratio'; // Assuming same ratio for all users
+                    ratioInputElement.required = true; // Make ratio input required
+                    ratioInputElement.min = 0; // Assuming ratios can't be negative
+                    usersContainer.appendChild(ratioInputElement);
+                }
 
                 // Remove the selected option from the dropdown
                 this.remove(this.selectedIndex);
