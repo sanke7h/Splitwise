@@ -347,6 +347,7 @@ app.post('/group_details',async(req,res)=>{
             }
 
         }
+        console.log(users);
         console.log(friends);
         res.render("groupdetails", { group: groupResults[0], user: userResults[0] ,users,friends,members,isadmin});
     }catch(error){
@@ -653,36 +654,72 @@ app.post('/add_expense',(req,res)=>{
     });
 })
 
+app.post('/new_expense', async (req, res) => {
+    console.log("New Expense:", req.body);
+    try {
+        const randomNumber = Math.floor(Math.random() * 10000) + 1;
+            const new_expense = {
+                userid: req.session.user_id,
+                groupid: req.body.groupid,
+                amount: req.body.Amount,
+                description: req.body.description,
+                random: randomNumber
+            };
+            await new Promise((resolve, reject) => {
+                connection.query('INSERT INTO `expenses` SET ?', new_expense, (error, results, fields) => {
+                    if (error) {
+                        console.error(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve();
+                });
+            });
 
-app.post('/new_expense', (req, res) => {
-    console.log(req.body);
-    const randomNumber = Math.floor(Math.random() * 10000) + 1;
-    const new_expense = {
-        userid: req.session.user_id,
-        groupid: req.body.groupid,
-        amount: req.body.Amount,
-        description: req.body.description,
-        random: randomNumber
-    };
+            const result = await new Promise((resolve, reject) => {
+                connection.query('SELECT expenseid FROM expenses WHERE random=?', randomNumber, (error, result, fields) => {
+                    if (error) {
+                        console.error(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve(result);
+                });
+            });
 
-    connection.query('INSERT INTO `expenses` SET ?', new_expense, (error, results, fields) => {
-        if (error) {
-            console.error(error);
-            return;
-        }
+        const expenseid = result[result.length - 1].expenseid;
+        const Amount=req.body.Amount;
+        const userid = req.session.user_id;
+        const userIDs = req.body.UserId;
+        const ratio=req.body.ratio;
+        const payments = [];
+        const aggregate=[];
+        const length=userIDs.length;
+        if (req.body.splitType === 'custom') {
+            for (let i = 0; i < length; i++) {
+                let currentUserID = userIDs[i];
+                let currentRatio = ratio[i];
+                let share=currentRatio*Amount;
 
-        connection.query('SELECT expenseid FROM expenses WHERE random=?',randomNumber, (error, result, fields) => {
-            if (error) {
-                console.error(error);
-                return;
+                const userObject = {
+                    useriD: currentUserID,
+                    receiverid: userid,
+                    expenseid: expenseid,
+                    amount: share
+                };
+                const agg_obj={
+                    useriD: currentUserID,
+                    receiverid: userid,
+                    amount: share
+                }
+                aggregate.push(agg_obj);
+                payments.push(userObject);
             }
-            const expenseid=result[result.length-1].expenseid;
-            const userid=req.session.user_id;
-            const userIDs = req.body.UserId;
-            const share = req.body.Amount / (userIDs.length + 1);
-
-            const payments = [];
-
+        } 
+        
+        
+        else {
+            const share = Amount / (length+ 1);
             userIDs.forEach(userID => {
                 const userObject = {
                     useriD: userID,
@@ -690,24 +727,122 @@ app.post('/new_expense', (req, res) => {
                     expenseid: expenseid,
                     amount: share
                 };
+                const agg_obj={
+                    useriD: userID,
+                    receiverid: userid,
+                    amount: share
+                }
+                aggregate.push(agg_obj);
                 payments.push(userObject);
             });
-
-            console.log(payments);
-
-            payments.forEach(payment => {
-                connection.query('INSERT INTO `payments` SET ?',payment, (error, results, fields) => {
+        }
+        for (const payment of payments) {
+            await new Promise((resolve, reject) => {
+                connection.query('INSERT INTO `payments` SET ?', payment, (error, results, fields) => {
                     if (error) {
                         console.error("Error inserting payment", payment);
                         console.error(error);
+                        reject(error);
                         return;
                     }
+                    resolve();
                 });
             });
-        
-            res.send("Expense inserted");
-        });
-    });
+        }
+
+        for(const entry of aggregate){
+            const a=entry.useriD;
+            const b=entry.receiverid;
+            const c=entry.amount;
+
+            const result = await new Promise((resolve, reject) => {
+                connection.query('SELECT * FROM aggregate WHERE userid=? AND receiverid=? AND status=?',[a,b,0], (error, result, fields) => {
+                    if (error) {
+                        console.error(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve(result);
+                });
+            });
+
+            if(result.length>0){
+                await new Promise((resolve, reject) => {
+                    connection.query('UPDATE aggregate SET amount = amount + ? WHERE userid = ? AND receiverid = ? AND status=?',[c,a,b,0], (error, results, fields) => {
+                        if (error) {
+                            console.error(error);
+                            reject(error);
+                            return;
+                        }
+                        resolve();
+                    });
+                });
+    
+            }
+            else{
+                const results = await new Promise((resolve, reject) => {
+                    connection.query('SELECT * FROM aggregate WHERE userid=? AND receiverid=? AND status=?',[b,a,0], (error, result, fields) => {
+                        if (error) {
+                            console.error(error);
+                            reject(error);
+                            return;
+                        }
+                        resolve(result);
+                    });
+                });
+
+                if(results.length>0){
+                    let newAmount = results[0].amount - c;
+                    console.log(newAmount);
+                    if (newAmount < 0) {
+                        // Switch userid and receiverid, and negate c
+                       newAmount = -1*newAmount;
+                       await new Promise((resolve, reject) => {
+                        connection.query('UPDATE aggregate SET amount =?, userid=?, receiverid=? WHERE userid = ? AND receiverid = ? AND status=?',[newAmount,a,b,b,a,0], (error, results, fields) => {
+                            if (error) {
+                                console.error(error);
+                                reject(error);
+                                return;
+                            }
+                            resolve();
+                        });
+                    });
+                    //    [a, b] = [b, a];
+                    }
+                    else{
+                    await new Promise((resolve, reject) => {
+                        connection.query('UPDATE aggregate SET amount =? WHERE userid = ? AND receiverid = ? AND status=?',[newAmount,b,a,0], (error, results, fields) => {
+                            if (error) {
+                                console.error(error);
+                                reject(error);
+                                return;
+                            }
+                            resolve();
+                        });
+                    });
+                    }
+                }
+
+                else{
+                    await new Promise((resolve, reject) => {
+                        connection.query('INSERT INTO `aggregate` SET ?', entry, (error, results, fields) => {
+                            if (error) {
+                                console.error("Error inserting payment", payment);
+                                console.error(error);
+                                reject(error);
+                                return;
+                            }
+                            resolve();
+                        });
+                    });
+                }
+            }
+        }
+
+        res.send("Expense inserted");
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 app.get('/payments',(req,res)=>{
@@ -807,9 +942,53 @@ app.post('/pay',(req,res)=>{
 
 
 
-app.post('/payment/process',(req,res)=>{
+app.post('/payment/process',async(req,res)=>{
     //to be added
-    console.log(req.body);
-    res.redirect('/profile');
-})
+    try{
+    const userid=req.session.user_id;
+    const receiverid=req.body.receiverid;
+    const amount=req.body.amount;
+    const password=req.body.Password;
 
+    const results=await new Promise((resolve,reject)=>{
+        connection.query('SELECT PASSWORD FROM `user` WHERE `userId`=?',[userid],(error,results)=>{
+            if(error){
+                console.log(error);
+            }
+            resolve(results);
+        })
+    })
+
+    const match = await bcrypt.compare(password, results[0].PASSWORD);
+            if (match) {
+                await new Promise((resolve, reject) => {
+                    connection.query('UPDATE `payments` SET status = 1 WHERE (status = 2 AND userid = ? AND receiverid = ?) OR (status = 2 AND userid = ? AND receiverid = ?)', [userid,receiverid,receiverid,userid], (error, results, fields) => {
+                        if (error) {
+                            console.error(error);
+                            reject(error);
+                            return;
+                        }
+                        resolve();
+                    });
+                });
+
+                await new Promise((resolve, reject) => {
+                    connection.query('UPDATE `aggregate` SET status = 1 WHERE (status = 0 AND userid = ? AND receiverid = ?)', [userid,receiverid,receiverid,userid], (error, results, fields) => {
+                        if (error) {
+                            console.error(error);
+                            reject(error);
+                            return;
+                        }
+                        resolve();
+                    });
+                });                 
+
+                res.send("Payment Successful");
+            } else {
+                res.send("Incorrect Transaction...Try Again");
+            }
+    }catch(error){
+        console.log(error);
+    }
+
+})
