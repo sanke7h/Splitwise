@@ -254,7 +254,7 @@
 
             <div>
 
-                <h1>Add New Expense</h1>
+                <h1 style="padding-bottom: 15px;">Add New Expense</h1>
     <form action="/new_expense" method="post" id="expenseForm" style="max-width: 600px; margin: auto; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
         <div style="margin-bottom: 20px;">
             <label for="description" style="display: block; margin-top: 20px; font-weight: bold;">Enter Expense Description</label>
@@ -279,8 +279,8 @@
             <input type="hidden" id="usersData" value='<%- JSON.stringify(results) %>'>
             <!-- Dropdown will be inserted here -->
         </div>
-        <button type="button" onclick="showDropdown()" style="padding: 10px 20px; border-radius: 5px; background-color: #4CAF50; color: white; border: none; cursor: pointer; margin-right: 10px; transition: background-color 0.3s;">Add User</button>
-        <button type="submit" style="padding: 10px 20px; border-radius: 5px; background-color: #008CBA; color: white; border: none; cursor: pointer; transition: background-color 0.3s;">Create Expense</button>
+        <button type="button" onclick="showDropdown()" style="padding: 10px 20px; border-radius: 5px; background-color: #f6af33; color: white; border: none; cursor: pointer; margin-right: 10px; transition: background-color 0.3s;">Add User</button>
+        <button type="submit" style="padding: 10px 20px; border-radius: 5px; background-color: #5a58e9; color: white; border: none; cursor: pointer; transition: background-color 0.3s;">Create Expense</button>
     </form>
 
     <script>
@@ -366,37 +366,8 @@
         this.remove(this.selectedIndex);
     });
 }
-
-
-
-
     </script>
-
-<script>
-    console.log("Script is running"); // Confirm the script runs on page load
-
-    document.addEventListener("DOMContentLoaded", function() {
-        var expenseForm = document.getElementById('expenseForm');
-
-        if (expenseForm) {
-            expenseForm.addEventListener('submit', function(event) {
-                event.preventDefault(); // Stop the form from submitting
-
-                console.log("Form submitted");
-
-                var formData = new FormData(expenseForm);
-                for (var pair of formData.entries()) {
-                    console.log(pair[0]+ ': ' + pair[1]); 
-                }
-
-                // Proceed with form submission or other logic here
-            });
-        } else {
-            console.log("Form not found");
-        }
-    });
-</script>
-
+    <script src="/static/js/transactions.js"></script>
 </body>
 
 </html>
