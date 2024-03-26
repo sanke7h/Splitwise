@@ -27,15 +27,14 @@
         .sidebar {
             flex: 0 0 auto;
             background-color: #ffffff;
-            position: fixed;
         }
 
         .center-content {
             flex-grow: 1;
             display: flex;
-            /* flex-direction: column; */
+            flex-direction: column;
             align-items: center;
-            padding: 500px;
+            padding: 200px;
         }
 
         .header {
@@ -308,219 +307,65 @@
 
 
         <div class="center-content">
+            <head>
+                <title><%= group.groupname %></title>
+            </head>
             <body>
-                <!-- <div class="group-info">
-                    <img src="image3.jpg" alt="Group Picture" class="group-pic">
-                    <span class="group-name">Canteen</span>
-                </div> -->
-                <div class="table-widget">
-                    <div class="group-info">
-                        <img src="<%= group.group_pic %>" alt="Group Picture" class="group-pic">
-                        <span class="group-name"><%= group.groupname %></span>
-                    </div>
-                    <table>
-                        <thead>
-        
-                            <tr class="admin-info">
-                                <th colspan="3">Admin Name:<%= user.Name %>Admin EmailId:<%= user.Email %></th>
-                            </tr>
-                            <tr>
-                                
-                                <th>
-                                    
-                                    <form action="/add_expense" method="post">
-                                        <input type="hidden" name="groupid" value="<%= group.groupid %>">
-                                        <button type="submit">Create New Expense</button>
-                                    </form>
-                                                                </th>
-                            </tr>
-                        </thead>
-                        <caption>
-                            GroupMembers
-                            <span class="table-row-count"></span>
-                        </caption> 
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email address</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="team-member-rows">
-                            <!-- Rows are generated -->
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3">
-                                    <ul class="pagination">
-                                        <!-- Generated pages -->
-                                    </ul>
-                                </td>
-                                <tr>
-                                    <td colspan="3" class="table-actions">
-                                        <% if(isadmin==1){ %>
-                                            <% if(users.length>0){ %>
-                                        <form action="/add_member" method="post" id="addMemberForm">
-                                            <button type="button" id="showDropdownBtn">Invite Member</button>
-                                            <div id="dropdownContainer" style="display: none;">
-                                                <label for="userId">Select Member:</label>
-                                                <select id="userId" name="userId">
-                                                    <% users.forEach(users => { %>
-                                                        <option value="<%= users.userId %>"><%= users.Name %></option>
-                                                    <% }); %>
-                                                </select>
-                                                <input type="hidden" name="groupid" value="<%= group.groupid %>">
-                                                <button type="submit">Invite</button>
-                                            </div>
-                                        </form>
-                                            <% } %>
-                                            <% if(friends.length>0){ %>
-                                                <form action="/add_friend" method="post" id="addMemberForm">
-                                                    <!-- <input type="hidden" name="friends" value="<%= friends.length %>"> -->
-                                                    <button type="button" id="showDropdownBtn2">Add Friend</button>
-                                                    <div id="dropdownContainer2" style="display: none;">
-                                                        <label for="Friendid">Select Friend:</label>
-                                                        <select id="Friendid" name="Friendid">
-                                                            <% friends.forEach(friend => { %>
-                                                                <option value="<%= friend.userId %>"><%= friend.Name %></option>
-                                                            <% }); %>
-                                                        </select>
-                                                        <input type="hidden" name="groupid" value="<%= group.groupid %>">
-                                                        <button type="submit">Add</button>
-                                                    </div>
-                                                </form>
-                                                    <% } %>
-                                                <% } %>
-                                    </td>
-                                </tr>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-                <script>
-
-
-
-        //             const teamMembers = [
-        //     {
-        //         src: 'assets/profile.jpg',
-        //         name: 'James Alexander',
-        //         alias: '@james',
-        //         email: 'james@example.com',
-        //         status: 'active',
-        //         tags: ['dev', 'QA']
-        //     },
-        //     {
-        //         src: 'assets/liliya.jpg',
-        //         name: 'Lilia Taylor',
-        //         alias: '@lilia',
-        //         email: 'lilia.taylor@example.com',
-        //         status: 'active',
-        //         tags: ['design', 'marketing']
-        //     },
-        //     {
-        //         src: 'assets/drew.jpg',
-        //         name: 'Drew Cano',
-        //         email: 'drew.crano@example.com',
-        //         alias: '@drew',
-        //         status: 'inactive',
-        //         tags: ['design', 'marketing']
-        //     },
-        
-        //     {
-        //         src: 'assets/nate.jpg',
-        //         name: 'Nate Conor',
-        //         email: 'nate@example.com',
-        //         alias: '@nate',
-        //         status: 'offline',
-        //         tags: ['dev']
-        //     },
-        //     {
-        //         name: 'Melissa Brantley',
-        //         src: 'assets/melissa.jpg',
-        //         email: 'melissa@example.com',
-        //         alias: '@melissa',
-        //         status: 'active',
-        //         tags: ['marketing']
-        //     },
-        //     {
-        //         name: 'Anna Smith',
-        //         src: 'assets/anna.jpg',
-        //         email: 'anna.smith@example.com',
-        //         alias: '@anna',
-        //         status: 'active',
-        //         tags: ['marketing', 'design']
-        //     },
-        //     {
-        //         src: 'assets/natalia.jpg',
-        //         name: 'Natalia Alexandra',
-        //         email: 'natalia@example.com',
-        //         alias: '@natalia',
-        //         status: 'inactive',
-        //         tags: ['dev', 'marketing']
-        //     },
-        // ];
-        
-        const teamMembers = <%- JSON.stringify(members) %>;
-
-
-
-        
-        let tableRowCount = document.getElementsByClassName('table-row-count');
-        tableRowCount[0].innerHTML = `(${teamMembers.length}) Members`;
-        console.log(tableRowCount)
-        
-        let tableBody = document.getElementById('team-member-rows');
-        
-        const itemsOnPage = 100;
-        
-        const numberOfPages = Math.ceil(teamMembers.length / itemsOnPage);
-        
-        const start = (new URLSearchParams(window.location.search)).get('page') || 1;
-        
-        const mappedRecords = teamMembers
-        .filter((teamMember, i) => (((start - 1) * itemsOnPage) < i + 1) && (i+1 <= start * itemsOnPage))
-        .map(
-          (teamMember) => {
-            return `<tr>
-                <td class="team-member-profile">
-                    <img src="${teamMember.profile_pic}" alt="${teamMember.Name}">
-                    <span class="profile-info">
-                        <span class="profile-info__name">
-                            ${teamMember.Name}
-                        </span>
-                    </span>
-                </td>
-                <td>${teamMember.Email}</td>
-                <td>
-                    <span class="tags">
-                        <% if(isadmin==1){ %>
-                        <button class="remove-user-btn"type="button">Remove User</button>
+                <h1><%= group.groupname %></h1>
+                <img src="<%= group.group_pic %>">
+                <div>Admin Name:<%= user.Name %></div>
+                <div>Admin EmailId:<%= user.Email %></div>  
+                <form action="/add_expense" method="post">
+                    <input type="hidden" name="groupid" value="<%= group.groupid %>">
+                    <button type="submit">Create New Expense</button>
+                </form>
+                <div>Group Members</div>
+                <% if(members.length==0){ %>
+                    <div>No Members Currently</div>
+                <% } %>
+                <% for(c of members){ %>
+                    <div>Name:<%= c.Name %></div>
+                    <div>Email:<%= c.Email %></div>
+                    <% if(isadmin==1){ %>
+                        <button type="button">Remove User</button>
                     <% } %>
-                    </span>        
-                </td>
-            </tr>`;
-        });
+                <% } %>
         
-        tableBody.innerHTML = mappedRecords.join('');
+                <!-- Add Member form -->
+            <% if(isadmin==1){ %>
+                <% if(users.length>0){ %>
+            <form action="/add_member" method="post" id="addMemberForm">
+                <button type="button" id="showDropdownBtn">Invite Member</button>
+                <div id="dropdownContainer" style="display: none;">
+                    <label for="userId">Select Member:</label>
+                    <select id="userId" name="userId">
+                        <% users.forEach(users => { %>
+                            <option value="<%= users.userId %>"><%= users.Name %></option>
+                        <% }); %>
+                    </select>
+                    <input type="hidden" name="groupid" value="<%= group.groupid %>">
+                    <button type="submit">Invite</button>
+                </div>
+            </form>
+                <% } %>
         
-        // const pagination = document.querySelector('.pagination');
-        
-        // const linkList = [];
-        
-        // for (let i = 0; i < numberOfPages; i++) {
-        //     const pageNumber = i + 1;
-            
-        //     console.log(pageNumber, start)
-        
-        //     linkList.push(`<li><a href="?page=${pageNumber}" ${pageNumber == start ? 'class="active"' : ''} title="page ${pageNumber}">${pageNumber}</a></li>`);
-        // }
-        
-        // pagination.innerHTML = linkList.join('');
-        
-                </script>
-                <!-- <script src="script.js"></script> -->
-            </body>
+                <% if(friends.length>0){ %>
+            <form action="/add_friend" method="post" id="addMemberForm">
+                <!-- <input type="hidden" name="friends" value="<%= friends.length %>"> -->
+                <button type="button" id="showDropdownBtn2">Add Friend</button>
+                <div id="dropdownContainer2" style="display: none;">
+                    <label for="Friendid">Select Friend:</label>
+                    <select id="Friendid" name="Friendid">
+                        <% friends.forEach(friend => { %>
+                            <option value="<%= friend.userId %>"><%= friend.Name %></option>
+                        <% }); %>
+                    </select>
+                    <input type="hidden" name="groupid" value="<%= group.groupid %>">
+                    <button type="submit">Add</button>
+                </div>
+            </form>
+                <% } %>
+            <% } %>
             
 
             <!-- ####################################################### -->
