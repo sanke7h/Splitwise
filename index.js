@@ -254,7 +254,7 @@ app.post('/group_details',async(req,res)=>{
         }
 
         const userResults = await new Promise((resolve, reject) => {
-            connection.query('SELECT Name,Email FROM `user` WHERE `userId` = ?', [adminId], (error, userResults, fields) => {
+            connection.query('SELECT Name,Email,profile_pic FROM `user` WHERE `userId` = ?', [adminId], (error, userResults, fields) => {
                 if (error) {
                     console.error(error);
                     reject(error);

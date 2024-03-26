@@ -743,3 +743,46 @@ body {
   font-weight: bold;
 }
 
+table thead th {
+    text-align: center;
+}
+
+/* Center the group admin info */
+.admin-info .team-member-profile {
+    text-align: center;
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+}
+
+/* Style the admin profile image for better appearance */
+.admin-info .team-member-profile img {
+    border-radius: 50%; /* Make the image round */
+    width: 50px; /* Set a fixed width */
+    height: 50px; /* Set a fixed height */
+    object-fit: cover; /* Ensure the image covers the area without losing aspect ratio */
+    margin-bottom: 10px; /* Add some space below the image */
+}
+
+/* Center group admin and photo */
+.group-info {
+    text-align: center;
+}
+
+.table-actions {
+  display: flex; /* Use flexbox */
+  justify-content: space-between; /* Place one item on the far left, the other on the far right */
+  align-items: center; /* Center items vertically */
+  width: 100%; /* Ensure it spans the full width of its parent */
+  padding: 10px; /* Add some padding for spacing */
+}
+
+#showDropdownBtn, #showDropdownBtn2 {
+  padding: 5px 15px; /* Add some padding inside the buttons */
+  border: none; /* Remove the default border */
+  border-radius: 4px; /* Slightly round the corners */
+  background-color: #5a58e9; /* Example button color, adjust as needed */
+  color: white; /* Text color */
+  cursor: pointer; /* Change the cursor to indicate it's clickable */
+}
+

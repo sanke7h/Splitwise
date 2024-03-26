@@ -22,6 +22,8 @@
         .container {
             display: flex;
             height: 100%;
+            align-items: center; /* Center children vertically */
+            justify-content: center; /* Center children horizontally */
         }
 
         .sidebar {
@@ -33,9 +35,10 @@
         .center-content {
             flex-grow: 1;
             display: flex;
+            flex-direction: column;
             /* flex-direction: column; */
             align-items: center;
-            padding: 500px;
+            padding: 20px;
         }
 
         .header {
@@ -232,26 +235,6 @@
                             <button type="submit">Logout</button>
                         </form>
                     </li>
-
-
-
-                    <!-- <li>
-                  <a href="#reports" title="Test" class="tooltip">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-description" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                      <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      <path d="M9 17h6"></path>
-                      <path d="M9 13h6"></path>
-                    </svg>
-                    <span class="link hide">Test</span>
-                    <span class="tooltip__content">Test</span>
-                  </a>
-                </li> -->
-
-
-
-
                 </ul>
             </div>
 
@@ -273,66 +256,36 @@
             </div>
             <!-- Other sidebar content if needed -->
         </nav>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <div class="center-content">
             <body>
-                <!-- <div class="group-info">
-                    <img src="image3.jpg" alt="Group Picture" class="group-pic">
-                    <span class="group-name">Canteen</span>
-                </div> -->
                 <div class="table-widget">
                     <div class="group-info">
                         <img src="<%= group.group_pic %>" alt="Group Picture" class="group-pic">
                         <span class="group-name"><%= group.groupname %></span>
+                        <form action="/add_expense" method="post" style="display: block; margin: auto;"> <!-- Form takes full width and centers its content -->
+                            <input type="hidden" name="groupid" value="<%= group.groupid %>">
+                            <button type="submit" style="padding: 15px 25px; border-radius: 2px; background-color: #5a58e9; color: white; border: none; cursor: pointer;">Create New Expense</button> <!-- Button styles -->
+                        </form>
                     </div>
                     <table>
                         <thead>
         
                             <tr class="admin-info">
-                                <th colspan="3">Admin Name:<%= user.Name %>Admin EmailId:<%= user.Email %></th>
-                            </tr>
-                            <tr>
-                                
-                                <th>
+                                <th colspan="3">
                                     
-                                    <form action="/add_expense" method="post">
-                                        <input type="hidden" name="groupid" value="<%= group.groupid %>">
-                                        <button type="submit">Create New Expense</button>
-                                    </form>
-                                                                </th>
+                                    <!-- Admin Name: <%= user.Name %> | Admin EmailId: <%= user.Email %> -->
+                                    <div class="team-member-profile">
+                                        Group Admin : 
+                                        <img src="<%= user.profile_pic %>" alt="bruh">
+                                        <span class="profile-info">
+                                            <span class="profile-info__name">
+                                                <%= user.Name %>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </th>
+                            </tr>
+                            <tr>   
                             </tr>
                         </thead>
                         <caption>
@@ -343,7 +296,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Email address</th>
-                                <th>Action</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="team-member-rows">
@@ -357,7 +310,7 @@
                                     </ul>
                                 </td>
                                 <tr>
-                                    <td colspan="3" class="table-actions">
+                                    <td colspan="3" class="table-actions" ">
                                         <% if(isadmin==1){ %>
                                             <% if(users.length>0){ %>
                                         <form action="/add_member" method="post" id="addMemberForm">
@@ -373,6 +326,12 @@
                                                 <button type="submit">Invite</button>
                                             </div>
                                         </form>
+                                    
+                                    </td>
+                                    <td>
+                                        
+                                    </td>
+                                    <td>
                                             <% } %>
                                             <% if(friends.length>0){ %>
                                                 <form action="/add_friend" method="post" id="addMemberForm">
@@ -392,6 +351,7 @@
                                                     <% } %>
                                                 <% } %>
                                     </td>
+                                </td>
                                 </tr>
                             </tr>
                         </tfoot>
@@ -399,73 +359,7 @@
                 </div>
                 <script>
 
-
-
-        //             const teamMembers = [
-        //     {
-        //         src: 'assets/profile.jpg',
-        //         name: 'James Alexander',
-        //         alias: '@james',
-        //         email: 'james@example.com',
-        //         status: 'active',
-        //         tags: ['dev', 'QA']
-        //     },
-        //     {
-        //         src: 'assets/liliya.jpg',
-        //         name: 'Lilia Taylor',
-        //         alias: '@lilia',
-        //         email: 'lilia.taylor@example.com',
-        //         status: 'active',
-        //         tags: ['design', 'marketing']
-        //     },
-        //     {
-        //         src: 'assets/drew.jpg',
-        //         name: 'Drew Cano',
-        //         email: 'drew.crano@example.com',
-        //         alias: '@drew',
-        //         status: 'inactive',
-        //         tags: ['design', 'marketing']
-        //     },
-        
-        //     {
-        //         src: 'assets/nate.jpg',
-        //         name: 'Nate Conor',
-        //         email: 'nate@example.com',
-        //         alias: '@nate',
-        //         status: 'offline',
-        //         tags: ['dev']
-        //     },
-        //     {
-        //         name: 'Melissa Brantley',
-        //         src: 'assets/melissa.jpg',
-        //         email: 'melissa@example.com',
-        //         alias: '@melissa',
-        //         status: 'active',
-        //         tags: ['marketing']
-        //     },
-        //     {
-        //         name: 'Anna Smith',
-        //         src: 'assets/anna.jpg',
-        //         email: 'anna.smith@example.com',
-        //         alias: '@anna',
-        //         status: 'active',
-        //         tags: ['marketing', 'design']
-        //     },
-        //     {
-        //         src: 'assets/natalia.jpg',
-        //         name: 'Natalia Alexandra',
-        //         email: 'natalia@example.com',
-        //         alias: '@natalia',
-        //         status: 'inactive',
-        //         tags: ['dev', 'marketing']
-        //     },
-        // ];
-        
         const teamMembers = <%- JSON.stringify(members) %>;
-
-
-
-        
         let tableRowCount = document.getElementsByClassName('table-row-count');
         tableRowCount[0].innerHTML = `(${teamMembers.length}) Members`;
         console.log(tableRowCount)
@@ -503,111 +397,10 @@
         });
         
         tableBody.innerHTML = mappedRecords.join('');
-        
-        // const pagination = document.querySelector('.pagination');
-        
-        // const linkList = [];
-        
-        // for (let i = 0; i < numberOfPages; i++) {
-        //     const pageNumber = i + 1;
-            
-        //     console.log(pageNumber, start)
-        
-        //     linkList.push(`<li><a href="?page=${pageNumber}" ${pageNumber == start ? 'class="active"' : ''} title="page ${pageNumber}">${pageNumber}</a></li>`);
-        // }
-        
-        // pagination.innerHTML = linkList.join('');
-        
                 </script>
-                <!-- <script src="script.js"></script> -->
+                <script src="/static/js/groupdetails.js"></script>
             </body>
-            
-
-            <!-- ####################################################### -->
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <!-- ####################################################### -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
             <script>
                 // JavaScript to toggle visibility of dropdown when Add Member button is clicked
                 document.getElementById('showDropdownBtn').addEventListener('click', function() {
@@ -617,49 +410,12 @@
                     document.getElementById('dropdownContainer2').style.display = 'block';
                     console.log(89392);
                     console.log(friends);
+                     console.log(user);
                 });
             </script>
             </body>
-
-
-
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <!-- Include your existing JavaScript file -->
     <script src="/static/js/groupdetails.js"></script>
     <!-- Include the new jQuery script for profile picture upload functionality -->
