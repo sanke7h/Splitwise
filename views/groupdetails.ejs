@@ -359,7 +359,11 @@
                 </div>
                 <script>
 
+
+        //Gets underlined but works fine
         const teamMembers = <%- JSON.stringify(members) %>;
+
+
         let tableRowCount = document.getElementsByClassName('table-row-count');
         tableRowCount[0].innerHTML = `(${teamMembers.length}) Members`;
         console.log(tableRowCount)
