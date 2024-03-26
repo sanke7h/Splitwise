@@ -285,21 +285,19 @@
 
     <script>
         function showDropdown() {
-    var results = JSON.parse(document.getElementById('usersData').value); // Retrieve the array from hidden input
+    var results = JSON.parse(document.getElementById('usersData').value);
     var dropdownContainer = document.getElementById('dropdownContainer');
-    dropdownContainer.innerHTML = ''; // Clear previous dropdown content
+    dropdownContainer.innerHTML = '';
 
     var select = document.createElement('select');
-    select.name = 'selectedUserId'; // Change to userId
-    select.style = 'width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);'; // Styling for dropdown
-
+    select.name = 'selectedUserId';
+    select.style = 'width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);';
     results.forEach(function (item) {
         var option = document.createElement('option');
-        option.value = item.userId; // Set userId as the value
+        option.value = item.userId;
         option.text = item.Name;
         select.appendChild(option);
     });
-
     dropdownContainer.appendChild(select);
 
     select.addEventListener('change', function () {
@@ -307,56 +305,98 @@
         var selectedUserName = this.options[this.selectedIndex].text;
 
         var usersContainer = document.getElementById('usersContainer');
-        usersContainer.style = 'margin-bottom: 20px;'; // Container styling
+        usersContainer.style = 'margin-bottom: 20px;';
 
-        // Container for each selected user
         var userDisplayContainer = document.createElement('div');
         userDisplayContainer.style = 'display: flex; align-items: center; margin-bottom: 10px; padding: 10px; background-color: #f0f0f0; border-radius: 5px;';
 
-        // Hidden input for userId
         var userInputElement = document.createElement('input');
         userInputElement.type = 'hidden';
         userInputElement.value = selectedUserId;
         userInputElement.name = 'UserId';
 
-        // Display text for userName
         var userDisplayText = document.createElement('span');
         userDisplayText.textContent = selectedUserName + ' ';
         userDisplayText.style = 'flex-grow: 1;';
 
-        // Remove button for each selected user
-        var removeButton = document.createElement('button');
-        removeButton.textContent = 'Remove';
-        removeButton.type = 'button';
-        removeButton.style = 'padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer; background-color: #d9534f; color: white;';
-        removeButton.onclick = function() {
-            usersContainer.removeChild(userDisplayContainer);
-        };
-
         userDisplayContainer.appendChild(userInputElement);
         userDisplayContainer.appendChild(userDisplayText);
-        userDisplayContainer.appendChild(removeButton);
+
+        if (document.querySelector('input[name="splitType"]:checked').value === 'custom') {
+            var ratioLabel = document.createElement('label');
+            ratioLabel.textContent = 'Ratio: ';
+            ratioLabel.style = 'margin-left: 10px;';
+
+            // Slider input
+            var ratioSlider = document.createElement('input');
+            ratioSlider.type = 'range';
+            ratioSlider.min = '0';
+            ratioSlider.max = '1';
+            ratioSlider.step = '0.01';
+            ratioSlider.value = '0.5';
+            ratioSlider.name = 'ratioSlider';
+            ratioSlider.style = 'margin-left: 10px; width: 100px;';
+
+            // Text input for manual ratio entry
+            var ratioInput = document.createElement('input');
+            ratioInput.type = 'number';
+            ratioInput.value = '0.5';
+            ratioInput.name = 'ratioInput';
+            ratioInput.style = 'margin-left: 10px; width: 60px;';
+            ratioInput.min = '0';
+            ratioInput.max = '1';
+            ratioInput.step = '0.01';
+
+            // Synchronize slider and text input
+            ratioSlider.oninput = function() {
+                ratioInput.value = parseFloat(this.value).toFixed(2);
+            };
+            ratioInput.oninput = function() {
+                ratioSlider.value = this.value;
+            };
+
+            userDisplayContainer.appendChild(ratioLabel);
+            userDisplayContainer.appendChild(ratioSlider);
+            userDisplayContainer.appendChild(ratioInput);
+        }
 
         usersContainer.appendChild(userDisplayContainer);
-
-        // If custom split, add input field for the ratio
-        if (document.querySelector('input[name="splitType"]:checked').value === 'custom') {
-            var ratioInputElement = document.createElement('input');
-            ratioInputElement.type = 'number';
-            ratioInputElement.placeholder = 'Ratio';
-            ratioInputElement.name = 'ratio'; // Assuming same ratio for all users
-            ratioInputElement.required = true; // Make ratio input required
-            ratioInputElement.min = 0; // Assuming ratios can't be negative
-            ratioInputElement.style = 'margin-left: 10px; padding: 5px; width: 50px; border-radius: 5px;'; // Styling for ratio input
-            userDisplayContainer.appendChild(ratioInputElement);
-        }
 
         // Remove the selected option from the dropdown
         this.remove(this.selectedIndex);
     });
 }
 
+
+
+
     </script>
+
+<script>
+    console.log("Script is running"); // Confirm the script runs on page load
+
+    document.addEventListener("DOMContentLoaded", function() {
+        var expenseForm = document.getElementById('expenseForm');
+
+        if (expenseForm) {
+            expenseForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Stop the form from submitting
+
+                console.log("Form submitted");
+
+                var formData = new FormData(expenseForm);
+                for (var pair of formData.entries()) {
+                    console.log(pair[0]+ ': ' + pair[1]); 
+                }
+
+                // Proceed with form submission or other logic here
+            });
+        } else {
+            console.log("Form not found");
+        }
+    });
+</script>
+
 </body>
 
 </html>
