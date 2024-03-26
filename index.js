@@ -3,6 +3,7 @@ const bcrypt=require('bcrypt');
 const mysql=require('mysql2');
 const session=require('express-session');
 const multer  = require('multer');
+const schedule = require('node-schedule');
 const path = require('path'); // Import the path module
 const { Console } = require('console');
 require('dotenv').config();
@@ -42,26 +43,124 @@ app.listen(3000,()=>{
     console.log("Listening on port 3000");
 });
 
+const job = schedule.scheduleJob('*/3 * * * *', function(){
+    connection.query(`
+    INSERT INTO reminders (userid, receiverid, amount)
+    SELECT userid, receiverid, amount
+    FROM aggregate
+    WHERE status = 0
+  `, (err, results, fields) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      return;
+    }
+    console.log(`New Reminder Added`);
+  });
+});
+
+
 app.get('/',(req,res)=>{
     res.render("homepage");
 })
 
-app.get('/profile',(req,res)=>{
-    if(req.session.user_id!=undefined){
-        const userid=req.session.user_id;
-        connection.query('SELECT * FROM `user` WHERE `userId`= ?',[userid], (error, results, fields) => {
-            if (error) {
-              console.log(error);
-              return;
-            }
-            res.render("profile",{results});
-        });
-    }
-    else{
-        return res.redirect('/login');
-    }
+app.get('/profile', async (req, res) => {
+    try {
+        if (req.session.user_id !== undefined) {
+            const userid = req.session.user_id;
 
-})
+            // Fetch user details
+            const userDetails = await new Promise((resolve, reject) => {
+                connection.query('SELECT * FROM `user` WHERE `userId`= ?', [userid], (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve(results);
+                });
+            });
+
+            // Fetch payments
+            connection.query("(SELECT receiverid AS ids, payments.amount, description FROM payments JOIN expenses ON payments.expenseid = expenses.expenseid WHERE payments.userid = ? AND status = ?) UNION ALL (SELECT payments.userid AS ids, -(payments.amount), description FROM payments JOIN expenses ON payments.expenseid = expenses.expenseid WHERE receiverid = ? AND status = ?) ORDER BY ids", [userid, 2, userid, 2], async (err, paymentResults, fields) => {
+                if (err) {
+                    console.error('Error executing query:', err);
+                    return;
+                }
+
+                const idMap = new Map(); // Map to store total amount and modified descriptions for each ID
+
+                if (paymentResults.length === 0) {
+                    // If no payments, render profile with only user details
+                    return res.render('profile', { results: userDetails, joinedData: [] });
+                }
+
+                // Iterate through each payment
+                paymentResults.forEach(payment => {
+                    const { ids, amount, description } = payment;
+
+                    // Check if the ID already exists in the map
+                    if (idMap.has(ids)) {
+                        const { totalAmount, descriptions } = idMap.get(ids);
+                        // Update total amount for the ID
+                        idMap.set(ids, {
+                            totalAmount: totalAmount + amount,
+                            descriptions: [...descriptions, `${amount} ${description}`]
+                        });
+                    } else {
+                        // If the ID doesn't exist in the map, create a new entry
+                        idMap.set(ids, {
+                            totalAmount: amount,
+                            descriptions: [`${amount}: ${description}`]
+                        });
+                    }
+                });
+
+                // Convert the map entries to the required structure
+                const transformedPayments = Array.from(idMap, ([ids, { totalAmount, descriptions }]) => ({
+                    ids,
+                    totalAmount,
+                    descriptions
+                }));
+
+                // Fetch user details for payments
+                const query = `SELECT userId, Name, Email, profile_pic FROM user WHERE userId IN (${transformedPayments.map(item => item.ids).join(',')})`;
+
+                connection.query(query, function (err, userResults, fields) {
+                    if (err) {
+                        console.error('Error fetching user details:', err);
+                        return res.status(500).send('Internal Server Error');
+                    }
+
+                    const joinedData = [];
+
+                    userResults.forEach(result => {
+                        const payment = transformedPayments.find(payment => payment.ids === result.userId);
+                        if (payment) {
+                            joinedData.push({
+                                userId: result.userId,
+                                Name: result.Name,
+                                Email: result.Email,
+                                profile_pic: result.profile_pic,
+                                totalAmount: payment.totalAmount,
+                                descriptions: payment.descriptions
+                            });
+                        }
+                    });
+                    console.log(1);
+                    console.log(userDetails);
+                    console.log(2);
+                    console.log(joinedData);
+                    res.render("profile", { results: userDetails, joinedData });
+                });
+            });
+        } else {
+            res.redirect('/login');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).send('Internal Server Error');
+    }
+});
 
 app.get('/signup',async(req,res)=>{
     if(!req.session.userid){
@@ -506,17 +605,6 @@ app.post('/accept', async (req, res) => {
         const userId = req.session.user_id;
         const requestid = req.body.requestid;
 
-        await new Promise((resolve, reject) => {
-            connection.query('UPDATE `requests` SET `status`=1 WHERE `request_id`=?', [requestid], (error, results, fields) => {
-                if (error) {
-                    console.error(error);
-                    reject(error);
-                    return;
-                }
-                resolve();
-            });
-        });
-        console.log(1);
 
         const requestResults = await new Promise((resolve, reject) => {
             connection.query('SELECT groupid FROM `requests` WHERE `request_id`=?', [requestid], (error, results, fields) => {
@@ -529,6 +617,20 @@ app.post('/accept', async (req, res) => {
             });
         });
         console.log(2);
+
+        await new Promise((resolve, reject) => {
+            connection.query('DELETE FROM requests WHERE request_id = ?', [requestid], (error, results, fields) => {
+                if (error) {
+                    console.error(error);
+                    reject(error);
+                    return;
+                }
+                resolve();
+            });
+        });
+        console.log(1);
+
+        
 
         const new_membership = {
             userId: userId,
@@ -621,7 +723,7 @@ app.post('/accept', async (req, res) => {
 app.post('/decline',(req,res)=>{
     const userId=req.session.user_id;
     const requestid=req.body.requestid;
-    connection.query('UPDATE `requests` SET `status`=0 WHERE `request_id`= ?', [requestid], (error, results, fields) => {
+    connection.query('DELETE FROM requests WHERE request_id = ?', [requestid], (error, results, fields) => {
         if (error) {
           console.error(error);
           return;
@@ -691,7 +793,7 @@ app.post('/new_expense', async (req, res) => {
         const Amount=req.body.Amount;
         const userid = req.session.user_id;
         const userIDs = req.body.UserId;
-        const ratio=req.body.ratio;
+        const ratio=req.body.ratioInput;
         const payments = [];
         const aggregate=[];
         const length=userIDs.length;
@@ -991,4 +1093,183 @@ app.post('/payment/process',async(req,res)=>{
         console.log(error);
     }
 
+})
+
+app.get('/user',async(req,res)=>{
+    if(req.session.user_id!=undefined){
+        const userid=req.session.user_id;
+        connection.query('SELECT * FROM `user` WHERE `userId`= ?',[userid], (error, result, fields) => {
+            if (error) {
+              console.log(error);
+              return;
+            }
+            const results=result[0];
+            res.render("user",{results});
+        });
+    }
+    else{
+        res.redirect('/login');
+    }
+})
+
+app.post('/changePassword',async(req,res)=>{
+    try{
+
+    } catch(error){
+
+    }
+})
+
+app.post('/changeDisplayPicture',async(req,res)=>{
+    try{
+
+    } catch(error){
+        
+    }
+})
+
+app.post('/markread',async(req,res)=>{
+    try{
+        const userid=req.session.user_id;
+        await new Promise((resolve, reject) => {
+            connection.query(`DELETE FROM reminders WHERE userid = ?`, [userid], (error, results, fields) => {
+                if (error) {
+                    console.log(error);
+                    reject(error);
+                    return;
+                }
+                resolve();
+            });
+        });
+        res.redirect('/reminders');
+    } catch(err){
+        res.send(err);
+    }
+})
+
+
+app.get('/paid_transactions',async(req,res)=>{
+    try{
+        if(req.session.user_id!=undefined){
+            const userid=req.session.user_id;
+
+            const sql = `
+      SELECT
+          aggregate.date,
+          aggregate.amount,
+          user.Name,
+          user.Email,
+          user.profile_pic
+      FROM
+          aggregate
+      JOIN
+          user ON aggregate.receiverid = user.userId
+      WHERE
+          aggregate.userid = ? 
+          AND aggregate.status = 1;
+    `;
+
+
+            const results=await new Promise((resolve, reject) => {
+                connection.query(sql, [userid], (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve(results);
+                });
+            });
+            console.log(results);
+            res.render('paid_t',{results});
+        }
+        else{
+            res.redirect('/login');
+        }
+    } catch(error){
+
+    }
+})
+
+app.get('/received_transactions',async(req,res)=>{
+    try{
+        if(req.session.user_id!=undefined){
+            const userid=req.session.user_id;
+
+            const sql = `
+      SELECT
+          aggregate.date,
+          aggregate.amount,
+          user.Name,
+          user.Email,
+          user.profile_pic
+      FROM
+          aggregate
+      JOIN
+          user ON aggregate.userid = user.userId
+      WHERE
+          aggregate.receiverid = ? 
+          AND aggregate.status = 1;
+    `;
+
+
+            const results=await new Promise((resolve, reject) => {
+                connection.query(sql, [userid], (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve(results);
+                });
+            });
+            console.log(results);
+            res.render('received_t',{results});
+        }
+        else{
+            res.redirect('/login');
+        }
+    } catch(error){
+
+    }
+})
+
+app.get('/reminders',async(req,res)=>{
+    try{
+        if(req.session.user_id!=undefined){
+            const userid=req.session.user_id;
+
+            const sql = `
+      SELECT
+          reminders.amount,
+          user.Name,
+          user.profile_pic
+      FROM
+          reminders
+      JOIN
+          user ON reminders.receiverid = user.userId
+      WHERE
+      reminders.userid = ? 
+    `;
+
+
+            const results=await new Promise((resolve, reject) => {
+                connection.query(sql, [userid], (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve(results);
+                });
+            });
+            console.log(results);
+            res.render('reminders',{results});
+        }
+        else{
+            res.redirect('/login');
+        }
+    } catch(error){
+
+    }
 })

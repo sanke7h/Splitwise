@@ -228,30 +228,28 @@
 
 
                             <!-- Render Transactions here  -->
-
-
-
-
-
-
-
-
-
-
-
-                            <div>No Pending Transactions</div>
-
-
-
-
-
-
-
-
-
-
-
-
+                            <% if(joinedData.length==0|| joinedData.every(c => c.totalAmount <= 0)){ %>
+                                <h1>No Payments to be made</h1>
+                            <% } %>
+                            <% for(let c of joinedData){ %>
+                                <% if(c.totalAmount>0){ %>
+                                <div>
+                                    <div>Name:<%= c.Name %></div>
+                                    <img src="<%= c.profile_pic %>">
+                                    <div>Amount: <%= c.totalAmount %></div>
+                                    <div class="description-container">
+                                        <% c.descriptions.forEach(function(description) { %>
+                                          <div class="description-item"><%= description %></div>
+                                        <% }); %>
+                                    </div>
+                                    <form action="/pay" method="post">
+                                        <input type="hidden" name="receiverid" value="<%= c.userId %>">
+                                        <input type="hidden" name="Amount" value="<%= c.totalAmount %>">
+                                        <button type="submit">Pay</button>
+                                    </form>  
+                                </div>
+                                <% } %>
+                            <% } %>
                             <!-- Render Transactions here  -->
 
                         </div>

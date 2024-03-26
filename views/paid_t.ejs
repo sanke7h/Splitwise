@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paid Transactions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .result-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .result-card-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+        }
+        .result-card-body {
+            padding: 20px;
+        }
+        .result-card-body img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            float: left;
+            margin-right: 20px;
+        }
+        .result-card-body h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .result-card-body p {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <% if(results.length==0){ %>
+        <h1>No Transactions have been Made</h1>
+    <% }else{ %>
+        <div class="result-card-header">
+            Paid Transactions
+        </div>
+    <% results.forEach(function(result) { %>
+        <div class="result-card">
+            <div class="result-card-body">
+                <img src="<%= result.profile_pic %>" alt="Profile Picture">
+                <h3><%= result.Name %></h3>
+                <p>Email: <%= result.Email %></p>
+                <p>Date: <%= result.date.toDateString() %></p>
+                <p>Amount: $<%= result.amount %></p>
+            </div>
+        </div>
+    <% }); %>
+    <% } %>
+</body>
+</html>

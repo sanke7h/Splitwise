@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <!-- Include any necessary CSS styles here -->
+    <style>
+        /* Style for the password change form */
+        .password-form, .display-picture-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Details</h1>
+    <div>
+        <p><strong>Name:</strong> <%= results.Name %></p>
+        <p><strong>Email:</strong> <%= results.Email %></p>
+        <p><strong>Profile Picture:</strong> <img src="<%= results.profile_pic %>" alt="Profile Picture" style="max-width: 200px;"></p>
+    </div>
+    
+    <!-- Change Password Button -->
+    <button id="changePasswordBtn">Change Password</button>
+
+    <!-- Password Change Form -->
+    <form id="passwordForm" class="password-form" action="/changePassword" method="POST">
+        <label for="prevPassword">Previous Password:</label>
+        <input type="password" id="prevPassword" name="prevPassword" required><br><br>
+        <label for="newPassword">New Password:</label>
+        <input type="password" id="newPassword" name="newPassword" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <!-- Change Display Picture Button -->
+    <button id="changeDisplayPicBtn">Change Display Picture</button>
+
+    <!-- Display Picture Change Form -->
+    <form id="displayPictureForm" class="display-picture-form" action="/changeDisplayPicture" method="POST" enctype="multipart/form-data">
+        <input type="file" id="displayPicInput" name="displayPicInput" accept="image/*" required><br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <!-- Include any necessary JavaScript here -->
+    <script>
+        // JavaScript to toggle the visibility of the password change form and display picture change form
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const passwordForm = document.getElementById('passwordForm');
+
+        const changeDisplayPicBtn = document.getElementById('changeDisplayPicBtn');
+        const displayPictureForm = document.getElementById('displayPictureForm');
+
+        changePasswordBtn.addEventListener('click', function() {
+            passwordForm.classList.toggle('password-form');
+        });
+
+        changeDisplayPicBtn.addEventListener('click', function() {
+            displayPictureForm.classList.toggle('display-picture-form');
+        });
+    </script>
+</body>
+</html>
