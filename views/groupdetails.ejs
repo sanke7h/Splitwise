@@ -264,7 +264,7 @@
                         <span class="group-name"><%= group.groupname %></span>
                         <form action="/add_expense" method="post" style="display: block; margin: auto;"> <!-- Form takes full width and centers its content -->
                             <input type="hidden" name="groupid" value="<%= group.groupid %>">
-                            <button type="submit" style="padding: 15px 25px; border-radius: 2px; background-color: #5a58e9; color: white; border: none; cursor: pointer;">Create New Expense</button> <!-- Button styles -->
+                            <button type="submit" style="padding: 15px 15px; border-radius: 2px; background-color: #5a58e9; color: white; border: none; cursor: pointer;">Create New Expense</button> <!-- Button styles -->
                         </form>
                     </div>
                     <table>
@@ -296,7 +296,7 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Email address</th>
-                                <th></th>
+                                <th>Action      </th>
                             </tr>
                         </thead>
                         <tbody id="team-member-rows">
@@ -392,9 +392,12 @@
                 <td>${teamMember.Email}</td>
                 <td>
                     <span class="tags">
-                        <% if(isadmin==1){ %>
-                        <button class="remove-user-btn"type="button">Remove User</button>
-                    <% } %>
+                        <% if (isadmin == 1) { %>
+    <button class="remove-user-btn" type="button">Remove User</button>
+<% } else { %>
+    <button class="other-button" type="button">No Action</button>
+<% } %>
+
                     </span>        
                 </td>
             </tr>`;

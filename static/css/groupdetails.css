@@ -715,6 +715,17 @@ body {
   background-color: #e84141; /* Slightly darker shade for the hover state */
 }
 
+.other-button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem; /* Make the border-radius a bit rounder for a sleeker look */
+  border: none;
+  background-color: #f2b236;
+  color: white;
+  cursor: pointer;
+  font-weight: 600; /* Add some font weight for better readability */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
 body {
   /* display: flex; */
   flex-direction: column;
