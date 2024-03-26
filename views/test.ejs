@@ -3,127 +3,125 @@
 
 <head>
     <meta charset="utf-8">
-    <title><%= group.groupname %></title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="shortcut icon" href="/static/favicon.svg" type="image/svg+xml">
-    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/groupdetails.css">
-    <style>
-        body,
-        html {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
+    <<title>New Expense</title>
+        <link rel="stylesheet" href="/static/css/transactions.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <link rel="shortcut icon" href="/static/favicon.svg" type="image/svg+xml">
+        <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+        <style>
+            body,
+            html {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                font-family: 'Inter', sans-serif;
+            }
 
-        .container {
-            display: flex;
-            height: 100%;
-        }
+            .container {
+                display: flex;
+                height: 100%;
+            }
 
-        .sidebar {
-            flex: 0 0 auto;
-            background-color: #ffffff;
-        }
+            .sidebar {
+                flex: 0 0 auto;
+                background-color: #ffffff;
+            }
 
-        .center-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 200px;
-        }
+            .center-content {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 200px;
+            }
 
-        .header {
-            font-size: 36px;
-            font-weight: bold;
-            color: #272727;
-            margin-bottom: 40px;
-        }
+            .header {
+                font-size: 36px;
+                font-weight: bold;
+                color: #272727;
+                margin-bottom: 40px;
+            }
 
-        .file-upload {
-            display: none;
-        }
+            .file-upload {
+                display: none;
+            }
 
-        .circle {
-            border-radius: 1000px !important;
-            overflow: hidden;
-            width: 128px;
-            height: 128px;
-            border: 8px solid rgba(255, 255, 255, 0.7);
-            position: relative;
-            /* Changed position to relative */
-            margin: 0 auto;
-            /* Added margin to center horizontally */
-            margin-top: 20px;
-            /* Adjusted top margin to create space below headline */
-        }
+            .circle {
+                border-radius: 1000px !important;
+                overflow: hidden;
+                width: 128px;
+                height: 128px;
+                border: 8px solid rgba(255, 255, 255, 0.7);
+                position: relative;
+                /* Changed position to relative */
+                margin: 0 auto;
+                /* Added margin to center horizontally */
+                margin-top: 20px;
+                /* Adjusted top margin to create space below headline */
+            }
 
-        .profile-pic {
-            max-width: 100%;
-            height: auto;
-        }
+            .profile-pic {
+                max-width: 100%;
+                height: auto;
+            }
 
-        .p-image {
-            position: relative;
-            /* Changed position to relative */
-            margin-top: -40px;
-            /* Adjusted top margin to align with profile picture */
-            margin-left: 80px;
-            /* Adjusted left margin to align with profile picture */
-            color: #666666;
-            transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
-        }
+            .p-image {
+                position: relative;
+                /* Changed position to relative */
+                margin-top: -40px;
+                /* Adjusted top margin to align with profile picture */
+                margin-left: 80px;
+                /* Adjusted left margin to align with profile picture */
+                color: #666666;
+                transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+            }
 
-        .p-image:hover {
-            transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
-        }
+            .p-image:hover {
+                transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+            }
 
-        .upload-button {
-            font-size: 1.2em;
-        }
+            .upload-button {
+                font-size: 1.2em;
+            }
 
-        .upload-button:hover {
-            transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
-            color: #999;
-        }
+            .upload-button:hover {
+                transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+                color: #999;
+            }
 
-        /* Added style for input boxes */
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
-            margin-top: 20px;
-            /* Added margin-top to create space between input boxes */
-            width: calc(100% - 20px);
-            /* Adjusted width to fill the container */
-            box-sizing: border-box;
-            /* Added box-sizing to include padding and border in width calculation */
-            padding: 10px;
-            /* Added padding for better appearance */
-            margin-bottom: 10px;
-            /* Added margin-bottom to separate input boxes */
-        }
+            /* Added style for input boxes */
+            input[type="text"],
+            input[type="email"],
+            input[type="password"] {
+                margin-top: 20px;
+                /* Added margin-top to create space between input boxes */
+                width: calc(100% - 20px);
+                /* Adjusted width to fill the container */
+                box-sizing: border-box;
+                /* Added box-sizing to include padding and border in width calculation */
+                padding: 10px;
+                /* Added padding for better appearance */
+                margin-bottom: 10px;
+                /* Added margin-bottom to separate input boxes */
+            }
 
-        /* Adjusted the form container */
-        .form-container {
-            margin-top: 30px;
-            /* Increased margin-top */
-            height: auto;
-            /* Changed height to auto */
-            padding-bottom: 20px;
-            /* Added padding to bottom to separate form from other elements */
-        }
+            /* Adjusted the form container */
+            .form-container {
+                margin-top: 30px;
+                /* Increased margin-top */
+                height: auto;
+                /* Changed height to auto */
+                padding-bottom: 20px;
+                /* Added padding to bottom to separate form from other elements */
+            }
 
-        h1 {
-            margin-top: 10px;
-            /* Increased margin-top */
-        }
-
-        
-    </style>
+            h1 {
+                margin-top: 10px;
+                /* Increased margin-top */
+            }
+        </style>
 </head>
 
 <body class="collapsed">
@@ -231,26 +229,6 @@
                             <button type="submit">Logout</button>
                         </form>
                     </li>
-
-
-
-                    <!-- <li>
-                  <a href="#reports" title="Test" class="tooltip">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-description" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                      <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
-                      <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
-                      <path d="M9 17h6"></path>
-                      <path d="M9 13h6"></path>
-                    </svg>
-                    <span class="link hide">Test</span>
-                    <span class="tooltip__content">Test</span>
-                  </a>
-                </li> -->
-
-
-
-
                 </ul>
             </div>
 
@@ -272,270 +250,104 @@
             </div>
             <!-- Other sidebar content if needed -->
         </nav>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <div class="center-content">
-            <head>
-                <title><%= group.groupname %></title>
-            </head>
-            <body>
-                <h1><%= group.groupname %></h1>
-                <img src="<%= group.group_pic %>">
-                <div>Admin Name:<%= user.Name %></div>
-                <div>Admin EmailId:<%= user.Email %></div>  
-                <form action="/add_expense" method="post">
-                    <input type="hidden" name="groupid" value="<%= group.groupid %>">
-                    <button type="submit">Create New Expense</button>
+
+            <div>
+
+                <form action="/new_expense" method="post" id="expenseForm" style="max-width: 600px; margin: auto; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+
+                    <div style="margin-bottom: 20px;">
+                        <label for="description" style="display: block; margin-top: 20px; font-weight: bold;">Enter Expense Description</label>
+                        <input id="description" type="text" name="description" required style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
+                    </div>
+                
+                    <input id="groupid" type="hidden" name="groupid" value="<%= groupid %>">
+                
+                    <div style="margin-bottom: 20px;">
+                        <label for="Amount" style="display: block; margin-top: 20px; font-weight: bold;">Enter Total Amount</label>
+                        <input id="Amount" type="number" name="Amount" required style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
+                    </div>
+                
+                    <div style="margin-bottom: 20px;">
+                        <label style="font-weight: bold;">Split Type:</label><br>
+                        <label style="margin-right: 10px;"><input type="radio" name="splitType" value="equal" checked style="margin-top: 5px;"> Equally</label>
+                        <label><input type="radio" name="splitType" value="custom" style="margin-top: 5px;"> Custom</label>
+                    </div>
+                
+                    <div id="usersContainer" style="margin-bottom: 20px;">
+                        <!-- Selected users will be displayed here -->
+                    </div>
+                
+                    <div id="dropdownContainer" style="margin-bottom: 20px;">
+                        <!-- Dropdown will be inserted here -->
+                    </div>
+                
+                    <button type="button" onclick="showDropdown()" style="padding: 10px 20px; border-radius: 5px; background-color: #4CAF50; color: white; border: none; cursor: pointer; margin-right: 10px; transition: background-color 0.3s;">Add User</button>
+                
+                    <button type="submit" style="padding: 10px 20px; border-radius: 5px; background-color: #008CBA; color: white; border: none; cursor: pointer; transition: background-color 0.3s;">Create Expense</button>
                 </form>
-                <div>Group Members</div>
-                <% if(members.length==0){ %>
-                    <div>No Members Currently</div>
-                <% } %>
-                <% for(c of members){ %>
-                    <div>Name:<%= c.Name %></div>
-                    <div>Email:<%= c.Email %></div>
-                    <% if(isadmin==1){ %>
-                        <button type="button">Remove User</button>
-                    <% } %>
-                <% } %>
-        
-                <!-- Add Member form -->
-            <% if(isadmin==1){ %>
-                <% if(users.length>0){ %>
-            <form action="/add_member" method="post" id="addMemberForm">
-                <button type="button" id="showDropdownBtn">Invite Member</button>
-                <div id="dropdownContainer" style="display: none;">
-                    <label for="userId">Select Member:</label>
-                    <select id="userId" name="userId">
-                        <% users.forEach(users => { %>
-                            <option value="<%= users.userId %>"><%= users.Name %></option>
-                        <% }); %>
-                    </select>
-                    <input type="hidden" name="groupid" value="<%= group.groupid %>">
-                    <button type="submit">Invite</button>
-                </div>
-            </form>
-                <% } %>
-        
-                <% if(friends.length>0){ %>
-            <form action="/add_friend" method="post" id="addMemberForm">
-                <!-- <input type="hidden" name="friends" value="<%= friends.length %>"> -->
-                <button type="button" id="showDropdownBtn2">Add Friend</button>
-                <div id="dropdownContainer2" style="display: none;">
-                    <label for="Friendid">Select Friend:</label>
-                    <select id="Friendid" name="Friendid">
-                        <% friends.forEach(friend => { %>
-                            <option value="<%= friend.userId %>"><%= friend.Name %></option>
-                        <% }); %>
-                    </select>
-                    <input type="hidden" name="groupid" value="<%= group.groupid %>">
-                    <button type="submit">Add</button>
-                </div>
-            </form>
-                <% } %>
-            <% } %>
-            
-
-            <!-- ####################################################### -->
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <!-- ####################################################### -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <script>
-                // JavaScript to toggle visibility of dropdown when Add Member button is clicked
-                document.getElementById('showDropdownBtn').addEventListener('click', function() {
-                    document.getElementById('dropdownContainer').style.display = 'block';
-                });
-                document.getElementById('showDropdownBtn2').addEventListener('click', function() {
-                    document.getElementById('dropdownContainer2').style.display = 'block';
-                    console.log(89392);
-                    console.log(friends);
-                });
-            </script>
-            </body>
-
-
-
+                
+
+                <script>
+                    function showDropdown() {
+                        var results = JSON.parse(document.getElementById('usersData').value); // Retrieve the array from hidden input
+                        var dropdownContainer = document.getElementById('dropdownContainer');
+                        dropdownContainer.innerHTML = ''; // Clear previous dropdown content
+
+                        var select = document.createElement('select');
+                        select.name = 'selectedUserId'; // Change to userId
+
+                        results.forEach(function (item) {
+                            var option = document.createElement('option');
+                            option.value = item.userId; // Set userId as the value
+                            option.text = item.Name;
+                            select.appendChild(option);
+                        });
+
+                        dropdownContainer.appendChild(select);
+
+                        select.addEventListener('change', function () {
+                            var selectedUserId = this.value;
+                            var selectedUserName = this.options[this.selectedIndex].text;
+
+                            // Add input field for the selected userid
+                            var usersContainer = document.getElementById('usersContainer');
+                            var userInputElement = document.createElement('input');
+                            userInputElement.type = 'hidden';
+                            userInputElement.value = selectedUserId; // Set userId as the value
+                            userInputElement.name = 'UserId';
+                            userInputElement.readOnly = true;
+                            usersContainer.appendChild(userInputElement);
+
+                            // Add input field for the selected userName
+                            var userInputElement2 = document.createElement('input');
+                            userInputElement2.type = 'text';
+                            userInputElement2.value = selectedUserName; // Set userId as the value
+                            userInputElement2.name = 'Name';
+                            userInputElement2.readOnly = true;
+                            usersContainer.appendChild(userInputElement2);
+
+                            // If custom split, add input field for the ratio
+                            if (document.querySelector('input[name="splitType"]:checked').value === 'custom') {
+                                var ratioInputElement = document.createElement('input');
+                                ratioInputElement.type = 'number';
+                                ratioInputElement.placeholder = 'Ratio';
+                                ratioInputElement.name = 'ratio'; // Assuming same ratio for all users
+                                ratioInputElement.required = true; // Make ratio input required
+                                ratioInputElement.min = 0; // Assuming ratios can't be negative
+                                usersContainer.appendChild(ratioInputElement);
+                            }
+
+                            // Remove the selected option from the dropdown
+                            this.remove(this.selectedIndex);
+                        });
+                    }
+                </script>
+            </div>
         </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <!-- Include your existing JavaScript file -->
-    <script src="/static/js/groupdetails.js"></script>
-    <!-- Include the new jQuery script for profile picture upload functionality -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            var readURL = function (input) {
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $('.profile-pic').attr('src', e.target.result);
-                    }
-                    reader.readAsDataURL(input.files[0]);
-                }
-            }
-            $(".file-upload").on('change', function () {
-                readURL(this);
-            });
-            $(".upload-button").on('click', function () {
-                $(".file-upload").click();
-            });
-        });
-    </script>
+    <script src="/static/js/transactions.js"></script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
