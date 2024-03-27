@@ -941,7 +941,11 @@ app.post('/new_expense', async (req, res) => {
             }
         }
 
-        res.send("Expense inserted");
+        // res.send("Expense inserted");
+        const errMessage="Expense Inserted"
+                const altButton="Profile"
+                const altRoute="/profile"
+                res.render("err",{error:errMessage,altB:altButton,altR:altRoute})
     } catch (error) {
         console.log(error);
     }
