@@ -1,47 +1,335 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <title>User Details</title>
-    <!-- Include any necessary CSS styles here -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="shortcut icon" href="/static/favicon.svg" type="image/svg+xml">
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/user.css">
     <style>
-        /* Style for the password change form */
-        .password-form, .display-picture-form {
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            height: 100%;
+        }
+
+        .sidebar {
+            flex: 0 0 auto;
+            background-color: #ffffff;
+            position:fixed;
+        }
+
+        .center-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 200px;
+        }
+
+        .header {
+            font-size: 36px;
+            font-weight: bold;
+            color: #272727;
+            margin-bottom: 40px;
+        }
+
+        .file-upload {
             display: none;
+        }
+
+        .circle {
+            border-radius: 1000px !important;
+            overflow: hidden;
+            width: 128px;
+            height: 128px;
+            border: 8px solid rgba(255, 255, 255, 0.7);
+            position: relative;
+            /* Changed position to relative */
+            margin: 0 auto;
+            /* Added margin to center horizontally */
+            margin-top: 20px;
+            /* Adjusted top margin to create space below headline */
+        }
+
+        .profile-pic {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .p-image {
+            position: relative;
+            /* Changed position to relative */
+            margin-top: -40px;
+            /* Adjusted top margin to align with profile picture */
+            margin-left: 80px;
+            /* Adjusted left margin to align with profile picture */
+            color: #666666;
+            transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+        }
+
+        .p-image:hover {
+            transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+        }
+
+        .upload-button {
+            font-size: 1.2em;
+        }
+
+        .upload-button:hover {
+            transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+            color: #999;
+        }
+
+        .password-form, .display-picture-form {
+                        display: none;
+                    }
+
+        /* Added style for input boxes */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            margin-top: 20px;
+            /* Added margin-top to create space between input boxes */
+            width: calc(100% - 20px);
+            /* Adjusted width to fill the container */
+            box-sizing: border-box;
+            /* Added box-sizing to include padding and border in width calculation */
+            padding: 10px;
+            /* Added padding for better appearance */
+            margin-bottom: 10px;
+            /* Added margin-bottom to separate input boxes */
+        }
+
+        /* Adjusted the form container */
+        .form-container {
+            margin-top: 30px;
+            /* Increased margin-top */
+            height: auto;
+            /* Changed height to auto */
+            padding-bottom: 20px;
+            /* Added padding to bottom to separate form from other elements */
+        }
+
+        h1 {
+            margin-top: 10px;
+            /* Increased margin-top */
         }
     </style>
 </head>
-<body>
-    <h1>User Details</h1>
-    <div>
-        <p><strong>Name:</strong> <%= results.Name %></p>
-        <p><strong>Email:</strong> <%= results.Email %></p>
-        <p><strong>Profile Picture:</strong> <img src="<%= results.profile_pic %>" alt="Profile Picture" style="max-width: 200px;"></p>
+
+<body class="collapsed">
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-top">
+                <a href="/profile" class="logo__wrapper">
+                    <img src="/static/images/logo.png" alt="Logo" class="logo">
+                    <img src="/static/images/logo-small.png" alt="Logo" class="logo-small">
+                </a>
+            </div>
+            <div class="sidebar-links">
+                <ul>
+                    <li>
+
+                        <a href="/profile" title="" class="tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M5 12l-2 0l9 -9l9 9l-2 0"></path>
+                                <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path>
+                                <path d="M10 12h4v4h-4z"></path>
+                            </svg>
+                            <span class="link hide">Home</span>
+                            <span class="tooltip__content">Home</span>
+                        </a>
+                    </li>
+
+
+
+
+                    <li>
+                        <a href="/MyGroups" title="" class="tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users"
+                                width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+                                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                <path d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path>
+                            </svg>
+                            <span class="link hide">My Groups</span>
+                            <span class="tooltip__content">My Groups</span>
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="/addGroup" title="" class="tooltip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path
+                                    d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z">
+                                </path>
+                            </svg>
+                            <span class="link hide">Create Group</span>
+                            <span class="tooltip__content">Create Group</span>
+                        </a>
+                    </li>
+
+
+
+                    <li>
+                        <a href="#" title="" class="tooltip" onclick="submitForm('/requests')">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M8 16l2 -6l6 -2l-2 6l-6 2"></path>
+                                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                            </svg>
+                            <span class="link hide">Pending Requests</span>
+                            <span class="tooltip__content">Pending Requests</span>
+                        </a>
+                        <form id="myForm" action="/requests" method="post" style="display: none;">
+                            <button type="submit">Pending Requests</button>
+                        </form>
+                    </li>
+
+
+
+                    <li>
+                        <a href="#" title="" class="tooltip" onclick="submitForm('/logout')">
+                            <div style="position: relative;">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout"
+                                    width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+                                    fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                    <path
+                                        d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2">
+                                    </path>
+                                    <path d="M9 12h12l-3 -3"></path>
+                                    <path d="M18 15l3 -3"></path>
+                                </svg>
+                                <div class="notification"></div>
+                            </div>
+                            <span class="link hide">Logout</span>
+                            <span class="tooltip__content">Logout</span>
+                        </a>
+                        <form id="myForm" action="/logout" method="post" style="display: none;">
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
+
+
+
+                    <li>
+                        <a href="/user" title="Change Credentials" class="tooltip active">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-description" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+                            <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+                            <path d="M9 17h6"></path>
+                            <path d="M9 13h6"></path>
+                          </svg>
+                          <span class="link hide">Change Credentials</span>
+                          <span class="tooltip__content">Change Credentials</span>
+                        </a>
+                      </li>
+
+
+
+
+                </ul>
+            </div>
+
+
+            <div class="sidebar-bottom hide">
+                <img src="/static/images/diamond.png" alt="Diamond">
+                <p>
+                    Welcome to Splitwise!
+                </p>
+                <button>
+                    Smart Sharing!
+                </button>
+            </div>
+            <div class="expand-btn" style="display: hidden;">
+                <img src="/static/images/right-collapse.svg" alt="Left Collapse">
+                <span class="hide">
+                    Collapse
+                </span>
+            </div>
+            <!-- Other sidebar content if needed -->
+        </nav>
+        <div class="center-content" style="text-align: center; margin: auto; width: 60%; font-family: Arial, sans-serif;">
+            <h1 style="color: #333; font-size: 24px; margin-bottom: 30px;">User Details</h1>
+            <div style="background-color: #ffffff; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <p style="margin: 10px 0; font-size: 18px;"><%= results.Name %></p>
+                <p style="margin: 10px 0; font-size: 18px;"><%= results.Email %></p>
+                <p><img src="<%= results.profile_pic %>" alt="Profile Picture" style="max-width: 200px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></p>
+            </div>
+            
+            <button id="changePasswordBtn" style="background-color: #4CAF50; color: white; padding: 12px 24px; margin: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">Change Password</button>
+        
+            <form id="passwordForm" class="password-form" action="/changePassword" method="POST" style="margin-bottom: 20px;">
+                <label for="prevPassword" style="display: block; margin-top: 20px; font-size: 16px;">Previous Password:</label>
+                <input type="password" id="prevPassword" name="prevPassword" required style="margin-bottom: 20px; padding: 8px; border-radius: 4px; border: 1px solid #ccc; width: 80%;">
+        
+                <label for="newPassword" style="display: block; margin-top: 10px; font-size: 16px;">New Password:</label>
+                <input type="password" id="newPassword" name="newPassword" required style="margin-bottom: 20px; padding: 8px; border-radius: 4px; border: 1px solid #ccc; width: 80%;">
+        
+                <input type="submit" value="Submit" style="background-color: #008CBA; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+            </form>
+        
+            <button id="changeDisplayPicBtn" style="background-color: #008CBA; color: white; padding: 12px 24px; margin: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">Change Display Picture</button>
+        
+            <form id="displayPictureForm" class="display-picture-form" action="/changeDisplayPicture" method="POST" enctype="multipart/form-data" style="margin-bottom: 20px;">
+                <input type="file" id="displayPicInput" name="displayPicInput" accept="image/*" required style="margin-bottom: 20px; padding: 8px; border-radius: 4px; border: 1px solid #ccc; width: 80%;">
+        
+                <input type="submit" value="Submit" style="background-color: #555555; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
+            </form>
+        </div>
+        
+        
     </div>
-    
-    <!-- Change Password Button -->
-    <button id="changePasswordBtn">Change Password</button>
 
-    <!-- Password Change Form -->
-    <form id="passwordForm" class="password-form" action="/changePassword" method="POST">
-        <label for="prevPassword">Previous Password:</label>
-        <input type="password" id="prevPassword" name="prevPassword" required><br><br>
-        <label for="newPassword">New Password:</label>
-        <input type="password" id="newPassword" name="newPassword" required><br><br>
-        <input type="submit" value="Submit">
-    </form>
-
-    <!-- Change Display Picture Button -->
-    <button id="changeDisplayPicBtn">Change Display Picture</button>
-
-    <!-- Display Picture Change Form -->
-    <form id="displayPictureForm" class="display-picture-form" action="/changeDisplayPicture" method="POST" enctype="multipart/form-data">
-        <input type="file" id="displayPicInput" name="displayPicInput" accept="image/*" required><br><br>
-        <input type="submit" value="Submit">
-    </form>
-
-    <!-- Include any necessary JavaScript here -->
+    <!-- Include your existing JavaScript file -->
+    <script src="/static/js/user.js"></script>
+    <!-- Include the new jQuery script for profile picture upload functionality -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var readURL = function (input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('.profile-pic').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+            $(".file-upload").on('change', function () {
+                readURL(this);
+            });
+            $(".upload-button").on('click', function () {
+                $(".file-upload").click();
+            });
+        });
+    </script>
     <script>
         // JavaScript to toggle the visibility of the password change form and display picture change form
         const changePasswordBtn = document.getElementById('changePasswordBtn');
@@ -59,4 +347,9 @@
         });
     </script>
 </body>
+
 </html>
+
+
+
+
