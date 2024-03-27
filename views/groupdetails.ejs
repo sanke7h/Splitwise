@@ -315,7 +315,7 @@
                                             <% if(users.length>0){ %>
                                                 <form action="/add_member" method="post" id="addMemberForm">
                                                     <input type="text" id="userSearch" placeholder="Search users..." onkeyup="filterUsers()">
-                                                    <div id="userList" style="max-height: 200px; overflow-y: auto;">
+                                                    <div id="userList" style="max-height: 200px; overflow-y: auto; display: none;">
                                                         <% users.forEach(user => { %>
                                                             <div class="userOption">
                                                                 <input type="radio" name="userId" value="<%= user.userId %>">
@@ -325,7 +325,7 @@
                                                     </div>
                                                     <input type="hidden" name="groupid" value="<%= group.groupid %>">
                                                     <button type="submit" id="show2">Invite</button>
-                                                </form>     
+                                                </form>    
                                     </td>
                                     <td>
                                         

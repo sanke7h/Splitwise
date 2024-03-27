@@ -29,15 +29,18 @@ function submitForm(url) {
   
 
   function filterUsers() {
-    var input, filter, userList, userOptions, label, i, txtValue;
-    input = document.getElementById('userSearch');
+    var input, filter, userList, userOptions, i, txtValue;
+    input = document.getElementById("userSearch");
     filter = input.value.toUpperCase();
-    userList = document.getElementById('userList');
-    userOptions = userList.getElementsByClassName('userOption');
+    userList = document.getElementById("userList");
+    userOptions = userList.getElementsByClassName("userOption");
 
+    // Toggle the display of the userList based on input
+    userList.style.display = input.value.trim() ? "block" : "none";
+
+    // Loop through all list items, and hide those who don't match the search query
     for (i = 0; i < userOptions.length; i++) {
-        label = userOptions[i].getElementsByTagName('label')[0];
-        txtValue = label.textContent || label.innerText;
+        txtValue = userOptions[i].textContent || userOptions[i].innerText;
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
             userOptions[i].style.display = "";
         } else {
@@ -45,6 +48,7 @@ function submitForm(url) {
         }
     }
 }
+
   
   
   
