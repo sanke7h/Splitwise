@@ -233,10 +233,10 @@
                             <% } %>
                             <% for(let c of joinedData){ %>
                                 <% if(c.totalAmount>0){ %>
-                                <div>
-                                    <div>Name:<%= c.Name %></div>
+                                <div class="entry-container"> <!-- Add the class here -->
+                                    <div><%= c.Name %></div>
                                     <img src="<%= c.profile_pic %>">
-                                    <div>Amount: <%= c.totalAmount %></div>
+                                    <div>Rs.<%= c.totalAmount %></div>
                                     <div class="description-container">
                                         <% c.descriptions.forEach(function(description) { %>
                                           <div class="description-item"><%= description %></div>
@@ -250,6 +250,7 @@
                                 </div>
                                 <% } %>
                             <% } %>
+                            
                             <!-- Render Transactions here  -->
 
                         </div>

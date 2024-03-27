@@ -346,7 +346,7 @@ body.collapsed .expand-btn img {
   border-radius: 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 28rem;
+  max-width: 32rem;
   min-width: 20rem;
   margin: 0 auto;
   gap: 0.75rem;
@@ -552,4 +552,109 @@ body.collapsed .expand-btn img {
   /* Optional: Adds rounded corners */
   background-color: #ebe9ff;
   /* Background color */
+}
+
+/* Ensures that the container of each entry is displayed as a flex row */
+.entry-container {
+  display: flex;
+  align-items: center; /* Aligns items vertically in the center */
+  gap: 10px; /* Adds some space between items */
+  margin-bottom: 20px; /* Adds some space between entries */
+}
+
+.entry-container div,
+.entry-container form {
+  flex: 1; /* Each child takes up equal space */
+}
+
+/* Styles for the profile picture */
+.entry-container img {
+  width: 50px; /* Small size */
+  height: 50px; /* Equal width and height make it easier to turn into a circle */
+  border-radius: 50%; /* Creates the oval/circular shape */
+  object-fit: cover; /* Ensures the image covers the area without stretching */
+}
+
+/* Additional styling for the button to make it visually appealing */
+button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the description container and items */
+.description-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.description-item {
+  background-color: #f0f0f0;
+  padding: 2px 5px;
+  border-radius: 3px;
+}
+
+
+/* Entry container with shadow and padding for sleek appearance */
+.entry-container {
+  display: flex;
+  align-items: center; /* Aligns items vertically in the center */
+  gap: 15px; /* Adds some space between items */
+  background: #ffffff; /* White background for each entry */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Soft shadow for depth */
+  padding: 15px; /* Padding inside each entry */
+  border-radius: 8px; /* Rounded corners */
+  margin-bottom: 15px; /* Space between entries */
+}
+
+/* Profile picture styling */
+.entry-container img {
+  width: 60px; /* Slightly larger size */
+  height: 60px; /* Keep aspect ratio */
+  border-radius: 50%; /* Circular shape */
+  object-fit: cover; /* Ensures image covers the area */
+  border: 2px solid #007bff; /* Border color that matches the button */
+}
+
+/* Text and form elements styling */
+.entry-container div, .entry-container form {
+  flex: 1; /* Distribute space evenly */
+  margin: 0 5px; /* Spacing around text and form */
+}
+
+/* Button styling for better visual appeal */
+button {
+  padding: 8px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Description container and items with subtle styling */
+.description-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.description-item {
+  background-color: #e9ecef; /* Light grey background */
+  padding: 5px 10px;
+  border-radius: 15px; /* More rounded edges for a modern look */
+  font-size: 0.9em; /* Slightly smaller font size */
 }
