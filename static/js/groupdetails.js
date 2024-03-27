@@ -53,4 +53,13 @@ function submitForm(url) {
   
   
   
-  
+
+function toggleDropdown() {
+    var dropdown = document.getElementById("dropdownContainer2");
+    if (dropdown.style.display === "none") {
+        dropdown.style.display = "block";
+    } else {
+        dropdown.style.display = "none";
+    }
+}
+
