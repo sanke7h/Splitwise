@@ -1089,9 +1089,17 @@ app.post('/payment/process',async(req,res)=>{
                     });
                 });                 
 
-                res.send("Payment Successful");
+                // res.send("Payment Successful");
+                const errMessage="Payment Successful"
+                const altButton="Profile"
+                const altRoute="/profile"
+                res.render("err",{error:errMessage,altB:altButton,altR:altRoute})
             } else {
-                res.send("Incorrect Transaction...Try Again");
+                // res.send("Incorrect Transaction...Try Again");
+                const errMessage="Incorrect Transaction...Try Again"
+                const altButton="Profile"
+                const altRoute="/profile"
+                res.render("err",{error:errMessage,altB:altButton,altR:altRoute})
             }
     }catch(error){
         console.log(error);
