@@ -27,6 +27,24 @@ function submitForm(url) {
     })
   });
   
+
+  function filterUsers() {
+    var input, filter, userList, userOptions, label, i, txtValue;
+    input = document.getElementById('userSearch');
+    filter = input.value.toUpperCase();
+    userList = document.getElementById('userList');
+    userOptions = userList.getElementsByClassName('userOption');
+
+    for (i = 0; i < userOptions.length; i++) {
+        label = userOptions[i].getElementsByTagName('label')[0];
+        txtValue = label.textContent || label.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            userOptions[i].style.display = "";
+        } else {
+            userOptions[i].style.display = "none";
+        }
+    }
+}
   
   
   

@@ -313,20 +313,19 @@
                                     <td colspan="3" class="table-actions" ">
                                         <% if(isadmin==1){ %>
                                             <% if(users.length>0){ %>
-                                        <form action="/add_member" method="post" id="addMemberForm">
-                                            <button type="button" id="showDropdownBtn">Invite Member</button>
-                                            <div id="dropdownContainer" style="display: none;">
-                                                <label for="userId">Select Member:</label>
-                                                <select id="userId" name="userId">
-                                                    <% users.forEach(users => { %>
-                                                        <option value="<%= users.userId %>"><%= users.Name %></option>
-                                                    <% }); %>
-                                                </select>
-                                                <input type="hidden" name="groupid" value="<%= group.groupid %>">
-                                                <button type="submit">Invite</button>
-                                            </div>
-                                        </form>
-                                    
+                                                <form action="/add_member" method="post" id="addMemberForm">
+                                                    <input type="text" id="userSearch" placeholder="Search users..." onkeyup="filterUsers()">
+                                                    <div id="userList" style="max-height: 200px; overflow-y: auto;">
+                                                        <% users.forEach(user => { %>
+                                                            <div class="userOption">
+                                                                <input type="radio" name="userId" value="<%= user.userId %>">
+                                                                <label><%= user.Name %></label>
+                                                            </div>
+                                                        <% }); %>
+                                                    </div>
+                                                    <input type="hidden" name="groupid" value="<%= group.groupid %>">
+                                                    <button type="submit">Invite</button>
+                                                </form>     
                                     </td>
                                     <td>
                                         
@@ -405,21 +404,26 @@
         
         tableBody.innerHTML = mappedRecords.join('');
                 </script>
-                <script src="/static/js/groupdetails.js"></script>
+                <!-- <script src="/static/js/groupdetails.js"></script> -->
             </body>
         
             <script>
-                // JavaScript to toggle visibility of dropdown when Add Member button is clicked
-                document.getElementById('showDropdownBtn').addEventListener('click', function() {
-                    document.getElementById('dropdownContainer').style.display = 'block';
-                });
-                document.getElementById('showDropdownBtn2').addEventListener('click', function() {
-                    document.getElementById('dropdownContainer2').style.display = 'block';
-                    console.log(89392);
-                    console.log(friends);
-                     console.log(user);
+                document.addEventListener('DOMContentLoaded', function() {
+                    // JavaScript to toggle visibility of dropdown when Add Member button is clicked
+                    // document.getElementById('showDropdownBtn').addEventListener('click', function() {
+                    //     document.getElementById('dropdownContainer').style.display = 'block';
+                    // });
+            
+                    document.getElementById('showDropdownBtn2').addEventListener('click', function() {
+                        document.getElementById('dropdownContainer2').style.display = 'block';
+                        console.log(89392);
+                        console.log(friends);
+                        console.log(user);
+                    });
                 });
             </script>
+            
+            
             </body>
         </div>
     </div>
