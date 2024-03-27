@@ -797,3 +797,12 @@ table thead th {
   cursor: pointer; /* Change the cursor to indicate it's clickable */
 }
 
+#show2{
+  padding: 5px 15px; /* Add some padding inside the buttons */
+  border: none; /* Remove the default border */
+  border-radius: 4px; /* Slightly round the corners */
+  background-color: #5a58e9; /* Example button color, adjust as needed */
+  color: white; /* Text color */
+  cursor: pointer; /* Change the cursor to indicate it's clickable */
+}
+
