@@ -719,6 +719,28 @@ app.post('/accept', async (req, res) => {
     }
 });
 
+app.post('/remove_user',async(req,res)=>{
+    try{
+        console.log(req.body);
+        const groupid=req.body.groupid;
+        const userid=req.body.userid;
+
+        await new Promise((resolve, reject) => {
+            connection.query(`DELETE FROM memberships WHERE userId = ? AND groupid=?`, [userid,groupid], (error, results, fields) => {
+                if (error) {
+                    console.log(error);
+                    reject(error);
+                    return;
+                }
+                resolve();
+            });
+        });
+        res.redirect('/MyGroups');
+
+    } catch(error){
+        console.log(error);
+    }
+})
 
 app.post('/decline',(req,res)=>{
     const userId=req.session.user_id;

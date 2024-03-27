@@ -360,6 +360,7 @@
 
         //Gets underlined but works fine
         const teamMembers = <%- JSON.stringify(members) %>;
+        const group=<%- JSON.stringify(group) %>;
 
 
         let tableRowCount = document.getElementsByClassName('table-row-count');
@@ -391,7 +392,11 @@
                 <td>
                     <span class="tags">
                         <% if (isadmin == 1) { %>
-    <button class="remove-user-btn" type="button">Remove User</button>
+                            <form action="/remove_user" method="post">
+                            <input type="hidden" name="userid" value="${teamMember.userId}">
+                            <input type="hidden" name="groupid" value="${group.groupid}">
+                            <button class="remove-user-btn" type="submit">Remove User</button>
+                        </form>
 <% } else { %>
     <button class="other-button" type="button">No Action</button>
 <% } %>
