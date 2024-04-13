@@ -1254,6 +1254,7 @@ app.get('/received_transactions',async(req,res)=>{
                         reject(error);
                         return;
                     }
+
                     resolve(results);
                 });
             });
@@ -1267,6 +1268,79 @@ app.get('/received_transactions',async(req,res)=>{
 
     }
 })
+
+//Combined Received and Paid Transactions
+app.get('/paid_recv_transactions', async (req, res) => {
+    try {
+        if (req.session.user_id !== undefined) {
+            const userid = req.session.user_id;
+
+            // Query for paid transactions
+            const paidSql = `
+                SELECT
+                    aggregate.date,
+                    aggregate.amount,
+                    user.Name,
+                    user.Email,
+                    user.profile_pic
+                FROM
+                    aggregate
+                JOIN
+                    user ON aggregate.receiverid = user.userId
+                WHERE
+                    aggregate.userid = ? 
+                    AND aggregate.status = 1;
+            `;
+            const paidResults = await new Promise((resolve, reject) => {
+                connection.query(paidSql, [userid], (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve(results);
+                });
+            });
+
+            // Query for received transactions
+            const receivedSql = `
+                SELECT
+                    aggregate.date,
+                    aggregate.amount,
+                    user.Name,
+                    user.Email,
+                    user.profile_pic
+                FROM
+                    aggregate
+                JOIN
+                    user ON aggregate.userid = user.userId
+                WHERE
+                    aggregate.receiverid = ? 
+                    AND aggregate.status = 1;
+            `;
+            const receivedResults = await new Promise((resolve, reject) => {
+                connection.query(receivedSql, [userid], (error, results, fields) => {
+                    if (error) {
+                        console.log(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve(results);
+                });
+            });
+
+            console.log("Paid Transactions:", paidResults);
+            console.log("Received Transactions:", receivedResults);
+            
+            res.render('transactions', { paidResults, receivedResults });
+        } else {
+            res.redirect('/login');
+        }
+    } catch (error) {
+        console.error(error);
+        // Handle error
+    }
+});
 
 app.get('/reminders',async(req,res)=>{
     try{

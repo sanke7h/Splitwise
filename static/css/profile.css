@@ -578,16 +578,14 @@ body.collapsed .expand-btn img {
 /* Additional styling for the button to make it visually appealing */
 button {
   padding: 5px 10px;
-  background-color: #007bff;
-  color: white;
+  /* background-color: #007bff; */
+  /* color: white; */
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #0056b3;
-}
+
 
 /* Styling for the description container and items */
 .description-container {
@@ -633,16 +631,12 @@ button:hover {
 /* Button styling for better visual appeal */
 button {
   padding: 8px 15px;
-  background-color: #007bff;
-  color: white;
+  /* background-color: #007bff; */
+  /* color: white; */
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s; /* Smooth transition for hover effect */
-}
-
-button:hover {
-  background-color: #0056b3;
 }
 
 /* Description container and items with subtle styling */
