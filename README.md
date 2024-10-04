@@ -86,11 +86,33 @@ A Splitwise-like payment application built using Node.js, EJS, and MySQL databas
     SESSIONKEY=your_session_key
     ```
 
-4. Start the application:
+4. Set up the database structure:
+
+    Ensure that MySQL is installed and running. Then, log in to your MySQL server and create a database named `splitwise`:
+
+    ```bash
+    mysql -u your_mysql_user -p
+    ```
+
+    Once logged in, create the database:
+
+    ```sql
+    CREATE DATABASE splitwise;
+    USE splitwise
+    ```
+
+    After creating the database, source the provided `splitwise.sql` file to set up the database structure:
+
+    ```bash
+    source /path/to/your/splitwise.sql;
+    ```
+
+    Replace `your_mysql_user` with your actual MySQL username.
+
+5. Start the application:
 
     ```bash
     node index.js
     ```
 
     The application will be running at `http://localhost:3000`.
-
