@@ -98,7 +98,7 @@ A Splitwise-like payment application built using Node.js, EJS, and MySQL databas
 
     ```sql
     CREATE DATABASE splitwise;
-    USE splitwise
+    USE splitwise;
     ```
 
     After creating the database, source the provided `splitwise.sql` file to set up the database structure:
