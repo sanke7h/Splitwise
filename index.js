@@ -62,7 +62,7 @@ const redisClient = createClient({
 //   });
 
 const storage = new Storage({
-    keyFilename: './splitwise-440306-45b11f541014.json', // Update with the correct path
+    keyFilename: process.env.KeyFilename, // Update with the correct path
 });
 
 // Reference to your bucket
