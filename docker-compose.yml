@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DB_HOST=splitwise-mysql
+      - DB_USER=${DATABASE_USER}
+      - DB_PASSWORD=${MYSQLPASSWORD}
+      - DB_NAME=${DATABASE_NAME}
+      - SESSIONKEY=${SESSIONKEY}
+      - REDIS_HOST=redis   # Add Redis host environment variable
+      - REDIS_PORT=6379    # Redis default port
+    networks:
+      - app-network
+
+  db:
+    image: mysql:8.0
+    container_name: splitwise-mysql
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${MYSQLPASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQLPASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql           # Persistent storage for MySQL data
+      - ./splitwise.sql:/docker-entrypoint-initdb.d/splitwise.sql
+    ports:
+      - "3307:3306"
+    networks:
+      - app-network
+
+  redis:
+    image: redis:latest
+    container_name: splitwise-redis
+    ports:
+      - "6380:6379"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql_data:    # Declare the named volume here

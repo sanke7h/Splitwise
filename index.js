@@ -6,7 +6,10 @@ const multer  = require('multer');
 const schedule = require('node-schedule');
 const path = require('path'); // Import the path module
 const { Console } = require('console');
+const { Storage } = require('@google-cloud/storage');
 require('dotenv').config();
+const RedisStore = require('connect-redis').default;
+const { createClient } = require('redis');
 const app=express();
 
 const staticDirectory = path.join(__dirname, 'static');
@@ -16,28 +19,81 @@ app.use('/static', express.static(staticDirectory));
 
 // Set the views directory for EJS templates
 app.set('views', path.join(__dirname, 'views'));
-
 app.set('view engine','ejs');
+
 app.use(express.urlencoded({extended:true}));
-app.use(session({secret:process.env.SESSIONKEY,resave:false,saveUninitialized:false}));
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'static/images') // Directory where uploaded files will be stored
-    },
-    filename: function (req, file, cb) {
-      cb(null, Date.now()+path.extname(file.originalname)) // Use the original filename for the uploaded file
-    }
-  })
-  
-const upload = multer({ storage: storage })
-
-const connection =  mysql.createConnection({
-    host: 'localhost',
-    password: process.env.MYSQLPASSWORD,
-    user: 'root',
-    database: 'splitwise',
+const redisClient = createClient({
+    url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
   });
+  
+  redisClient.on('error', (err) => console.log('Redis Client Error', err));
+  
+  // Connect Redis client
+  redisClient.connect().catch(console.error);
+  
+  // Configure session with Redis store
+  app.use(session({
+    store: new RedisStore({ client: redisClient }),
+    secret: process.env.SESSIONKEY || 'your-secret-key', // Replace with your actual secret
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000 // 1 day
+    }
+  }));
+
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//       cb(null, 'static/images') // Directory where uploaded files will be stored
+//     },
+//     filename: function (req, file, cb) {
+//       cb(null, Date.now()+path.extname(file.originalname)) // Use the original filename for the uploaded file
+//     }
+//   })
+  
+// const upload = multer({ storage: storage })
+
+// const connection =  mysql.createConnection({
+//     host: 'localhost',
+//     password: process.env.MYSQLPASSWORD,
+//     user: 'root',
+//     database: 'splitwise',
+//   });
+
+const storage = new Storage({
+    keyFilename: './splitwise-440306-45b11f541014.json', // Update with the correct path
+});
+
+// Reference to your bucket
+const bucketName = 'splitwise_images';
+const bucket = storage.bucket(bucketName);
+
+// Configure multer for uploading files
+const upload = multer({
+    storage: multer.memoryStorage() // Store files in memory for upload to GCS
+});
+
+let connection;
+const connectWithRetry = () => {
+    connection = mysql.createConnection({
+        host: 'splitwise-mysql',
+        port: 3306,
+        password: process.env.MYSQLPASSWORD,
+        user: process.env.DATABASE_USER,
+        database: process.env.DATABASE_NAME
+    });
+
+    connection.connect((err) => {
+        if (err) {
+            console.error('Error connecting to the database:', err);
+            setTimeout(connectWithRetry, 2000); // Retry after 2 seconds
+        } else {
+            console.log('Database connected successfully');
+        }
+    });
+};
+connectWithRetry();
 
 app.listen(3000,()=>{
     console.log("Listening on port 3000");
@@ -65,7 +121,7 @@ app.get('/',(req,res)=>{
 
 app.get('/profile', async (req, res) => {
     try {
-        if (req.session.user_id !== undefined) {
+        if (req.session.user_id != undefined) {
             const userid = req.session.user_id;
 
             // Fetch user details
@@ -171,25 +227,55 @@ app.get('/signup',async(req,res)=>{
     }
 })
 
-app.post('/signup',upload.single('profilePic'),async (req, res) => {
+app.post('/signup', upload.single('profilePic'), async (req, res) => {
     const hashed = await bcrypt.hash(req.body.Password, 12);
     let newUser;
     req.body.Password = hashed;
-    if(req.file==undefined){
+
+    if (req.file) {
+        // Upload file to Google Cloud Storage
+        const blob = bucket.file(Date.now() + path.extname(req.file.originalname)); // Create a blob in the bucket
+        const blobStream = blob.createWriteStream({
+            metadata: {
+                contentType: req.file.mimetype,
+            },
+        });
+
+        blobStream.on('error', (err) => {
+            console.error(err);
+            return res.status(500).send('An error occurred while uploading the file.');
+        });
+
+        blobStream.on('finish', () => {
+            // Get the public URL of the uploaded file
+            const publicUrl = `https://storage.googleapis.com/${bucketName}/${blob.name}`;
+            newUser = {
+                Name: req.body.Name,
+                Email: req.body.Email,
+                PASSWORD: req.body.Password,
+                profile_pic: publicUrl, // Store the public URL in your DB
+            };
+
+            // Insert new user into the database
+            insertUser(newUser, req, res);
+        });
+
+        blobStream.end(req.file.buffer); // Use the buffer from multer to upload
+    } else {
+        // If no file uploaded, create user without profile_pic
         newUser = {
             Name: req.body.Name,
             Email: req.body.Email,
             PASSWORD: req.body.Password
         };
+
+        // Insert new user into the database
+        insertUser(newUser, req, res);
     }
-    else{
-        newUser = {
-            Name: req.body.Name,
-            Email: req.body.Email,
-            PASSWORD: req.body.Password,
-            profile_pic:req.file.path
-        };
-    }
+});
+
+// Function to insert user into MySQL
+const insertUser = (newUser, req, res) => {
     connection.query('INSERT INTO `user` SET ?', newUser, (error, results, fields) => {
         if (error) {
             console.error(error);
@@ -207,10 +293,9 @@ app.post('/signup',upload.single('profilePic'),async (req, res) => {
             req.session.user_id = results[0].userId;
             console.log("Id:", req.session.user_id);
             res.redirect('/profile');
-            
         });
     });
-});
+};
 
 app.get('/login',(req,res)=>{
     if(!req.session.user_id){
@@ -253,8 +338,12 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/logout',async(req,res)=>{
-    req.session.user_id=null;
-    res.redirect("/");
+    req.session.destroy((err) => {
+        if (err) {
+          console.log('Error destroying session:', err);
+        }
+        res.redirect('/login');
+      });
 })
 
 app.get('/MyGroups',async(req,res)=>{
@@ -1148,11 +1237,47 @@ app.get('/user',async(req,res)=>{
 
 app.post('/changePassword',async(req,res)=>{
     try{
-
+        console.log(req.body);
+        const prev=req.body.prevPassword;
+        const newPassword=req.body.newPassword;
+        const userid=req.session.user_id;
+        const PASSWORD=await new Promise((resolve,reject)=>{
+            connection.query('SELECT PASSWORD FROM `user` WHERE `userId`= ?',[userid], (error, result, fields) => {
+                if (error) {
+                  console.log(error);
+                  return;
+                }
+                const results=result[0].PASSWORD;
+                resolve(results);
+            });
+        });
+        console.log(PASSWORD);
+        const t=await bcrypt.compare(prev,PASSWORD);
+        console.log(t);
+        if(t){
+            const hashed = await bcrypt.hash(newPassword, 12);
+            await new Promise((resolve,reject)=>{
+                connection.query('UPDATE `user` SET PASSWORD=? WHERE `userId`=?',[hashed,userid], (error, results, fields) => {
+                    if (error) {
+                        console.error(error);
+                        reject(error);
+                        return;
+                    }
+                    resolve();
+                });
+            })
+            console.log("laa");
+            res.redirect('/profile');
+        }
+        else{
+            res.send("Invalid Previous Password");
+        }
+           
     } catch(error){
 
     }
 })
+
 
 app.post('/changeDisplayPicture',async(req,res)=>{
     try{
@@ -1272,7 +1397,7 @@ app.get('/received_transactions',async(req,res)=>{
 //Combined Received and Paid Transactions
 app.get('/paid_recv_transactions', async (req, res) => {
     try {
-        if (req.session.user_id !== undefined) {
+        if (req.session.user_id != undefined) {
             const userid = req.session.user_id;
 
             // Query for paid transactions
